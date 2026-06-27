@@ -1,1 +1,644 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>FlickTinder - Swipe Movies</title>
+    <!-- Tailwind CSS for rapid styling -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- Font Awesome for Icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    
+    <style>
+        :root {
+            --bg-color: #f3f4f6;
+            --card-width: 90vw;
+            --card-max-width: 400px;
+            --card-height: 70vh;
+            --card-max-height: 600px;
+        }
 
+        body {
+            background-color: var(--bg-color);
+            overflow: hidden; /* Prevent scrolling while swiping */
+            touch-action: none; /* Prevent browser default touch actions like pull-to-refresh */
+            font-family: 'Inter', sans-serif;
+        }
+
+        /* Container for the stack of cards */
+        .tinder {
+            width: 100vw;
+            height: 100vh;
+            overflow: hidden;
+            display: flex;
+            flex-direction: column;
+            position: relative;
+        }
+
+        .tinder--cards {
+            flex-grow: 1;
+            padding-top: 20px;
+            text-align: center;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            z-index: 1;
+            position: relative;
+        }
+
+        /* The individual card styling */
+        .tinder--card {
+            display: none; /* Hidden by default, JS handles showing the top ones */
+            position: absolute;
+            width: var(--card-width);
+            max-width: var(--card-max-width);
+            height: var(--card-height);
+            max-height: var(--card-max-height);
+            background: #FFFFFF;
+            border-radius: 20px;
+            overflow: hidden;
+            box-shadow: 0 10px 20px rgba(0,0,0,0.15);
+            transition: transform 0.3s ease, opacity 0.3s ease; /* Smooth transition for snap back */
+            cursor: grab;
+            user-select: none;
+            /* Flex layout within the card */
+            flex-direction: column;
+            will-change: transform;
+        }
+
+        /* When actively dragging, remove transition so it sticks to finger/mouse */
+        .tinder--card.moving {
+            transition: none;
+            cursor: grabbing;
+        }
+
+        .tinder--card img {
+            width: 100%;
+            height: 65%; /* Image takes up most of the card */
+            object-fit: cover;
+            pointer-events: none; /* Prevent image dragging issues */
+        }
+
+        .tinder--card h3 {
+            margin-top: 15px;
+            font-size: 24px;
+            font-weight: bold;
+            padding: 0 20px;
+            text-align: left;
+            color: #1f2937;
+        }
+        
+        .tinder--card .meta-info {
+            padding: 5px 20px;
+            text-align: left;
+            color: #6b7280;
+            font-size: 14px;
+            font-weight: 500;
+        }
+
+        .tinder--card p {
+            padding: 10px 20px 20px;
+            font-size: 14px;
+            color: #4b5563;
+            text-align: left;
+            line-height: 1.4;
+            flex-grow: 1;
+            overflow: hidden;
+            display: -webkit-box;
+            -webkit-line-clamp: 4; /* Limit description lines */
+            -webkit-box-orient: vertical;
+        }
+
+        .tinder--buttons {
+            flex: 0 0 100px;
+            text-align: center;
+            padding-bottom: 20px;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            gap: 20px;
+            z-index: 10;
+        }
+
+        /* Individual action buttons */
+        .tinder--buttons button {
+            border-radius: 50%;
+            width: 70px;
+            height: 70px;
+            border: none;
+            background: #FFF;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.1);
+            display: inline-flex;
+            justify-content: center;
+            align-items: center;
+            cursor: pointer;
+            transition: transform 0.2s, box-shadow 0.2s;
+            outline: none;
+            -webkit-tap-highlight-color: transparent;
+        }
+
+        .tinder--buttons button:hover {
+            transform: scale(1.05);
+            box-shadow: 0 6px 20px rgba(0,0,0,0.15);
+        }
+
+        .tinder--buttons button:active {
+            transform: scale(0.95);
+        }
+
+        .tinder--buttons button i {
+            font-size: 32px;
+        }
+
+        #nope i { color: #ff5252; }
+        #love i { color: #4CAF50; }
+        #watchlist-btn i { color: #2196F3; font-size: 24px; }
+        
+        #watchlist-btn { width: 50px; height: 50px; }
+
+        .stamp {
+            position: absolute;
+            top: 40px;
+            padding: 5px 15px;
+            border: 4px solid;
+            border-radius: 10px;
+            font-size: 32px;
+            font-weight: 800;
+            text-transform: uppercase;
+            opacity: 0;
+            z-index: 10;
+            pointer-events: none;
+        }
+
+        .stamp.nope {
+            color: #ff5252;
+            border-color: #ff5252;
+            right: 40px;
+            transform: rotate(15deg);
+        }
+
+        .stamp.like {
+            color: #4CAF50;
+            border-color: #4CAF50;
+            left: 40px;
+            transform: rotate(-15deg);
+        }
+
+        #watchlist-panel {
+            position: fixed;
+            top: 0;
+            right: -100%;
+            width: 100%;
+            max-width: 400px;
+            height: 100vh;
+            background: white;
+            box-shadow: -5px 0 15px rgba(0,0,0,0.1);
+            z-index: 50;
+            transition: right 0.3s ease-in-out;
+            display: flex;
+            flex-direction: column;
+        }
+
+        #watchlist-panel.open {
+            right: 0;
+        }
+
+        .watchlist-header {
+            padding: 20px;
+            border-bottom: 1px solid #eee;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .watchlist-content {
+            flex-grow: 1;
+            overflow-y: auto;
+            padding: 20px;
+        }
+
+        .watchlist-item {
+            display: flex;
+            gap: 15px;
+            margin-bottom: 15px;
+            align-items: center;
+            border-bottom: 1px solid #f3f4f6;
+            padding-bottom: 10px;
+        }
+
+        .watchlist-item img {
+            width: 60px;
+            height: 90px;
+            object-fit: cover;
+            border-radius: 8px;
+        }
+
+        .watchlist-item-info h4 {
+            font-weight: bold;
+            color: #1f2937;
+            margin-bottom: 5px;
+        }
+        
+        .watchlist-item-info span {
+            font-size: 12px;
+            color: #6b7280;
+        }
+        
+        /* Loading/Empty State */
+        .empty-state {
+            text-align: center;
+            padding: 40px 20px;
+            color: #9ca3af;
+            display: none; /* Shown by JS when stack is empty */
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            height: 100%;
+            position: absolute;
+            width: 100%;
+            z-index: 0;
+        }
+        
+        .empty-state i {
+            font-size: 48px;
+            margin-bottom: 15px;
+            color: #d1d5db;
+        }
+    </style>
+</head>
+<body>
+
+    <div class="tinder">
+        <!-- Header -->
+        <div class="flex justify-between items-center p-4 bg-white shadow-sm z-10">
+            <div class="text-2xl font-black text-rose-500 tracking-tighter flex items-center gap-2">
+                <i class="fa-solid fa-film"></i> FlickMatch
+            </div>
+            <button id="open-watchlist" class="text-gray-500 hover:text-gray-800 transition">
+                <i class="fa-solid fa-list-ul text-xl"></i>
+            </button>
+        </div>
+
+        <div class="tinder--cards" id="card-container">
+            <!-- Background Empty State -->
+            <div class="empty-state" id="empty-state">
+                <i class="fa-solid fa-ticket-simple"></i>
+                <h2 class="text-xl font-bold text-gray-700">Out of Movies!</h2>
+                <p class="mt-2 text-sm">You've swiped through all available movies.</p>
+                <button onclick="resetApp()" class="mt-6 px-6 py-2 bg-rose-500 text-white rounded-full font-semibold hover:bg-rose-600 transition">Start Over</button>
+            </div>
+            <!-- Cards will be injected here -->
+        </div>
+
+        <div class="tinder--buttons">
+            <button id="nope" onclick="handleButtonClick(false)"><i class="fa-solid fa-xmark"></i></button>
+            <button id="love" onclick="handleButtonClick(true)"><i class="fa-solid fa-heart"></i></button>
+        </div>
+    </div>
+
+    <div id="watchlist-panel">
+        <div class="watchlist-header">
+            <h2 class="text-xl font-bold text-gray-800">Your Watchlist</h2>
+            <button id="close-watchlist" class="text-gray-500 hover:text-gray-800 p-2">
+                <i class="fa-solid fa-xmark text-xl"></i>
+            </button>
+        </div>
+        <div class="watchlist-content" id="watchlist-items">
+            <!-- Watchlist items will be injected here -->
+            <div class="text-center text-gray-500 mt-10" id="empty-watchlist-msg">
+                Your watchlist is empty.<br>Start swiping right!
+            </div>
+        </div>
+    </div>
+
+    <!-- Backdrop for watchlist -->
+    <div id="watchlist-backdrop" class="fixed inset-0 bg-black/50 z-40 hidden transition-opacity" onclick="toggleWatchlist()"></div>
+
+    <script>
+        // Simulated Database of Movies
+        const movieDatabase = [
+            {
+                id: 1,
+                title: "Dune: Part Two",
+                year: "2024",
+                genre: "Sci-Fi / Adventure",
+                description: "Paul Atreides unites with Chani and the Fremen while on a warpath of revenge against the conspirators who destroyed his family.",
+                image: "https://image.tmdb.org/t/p/w600_and_h900_bestv2/1pdfLvkbY9ohJlCjQH2JGqqut1V.jpg"
+            },
+            {
+                id: 2,
+                title: "Oppenheimer",
+                year: "2023",
+                genre: "Biography / Drama",
+                description: "The story of American scientist J. Robert Oppenheimer and his role in the development of the atomic bomb.",
+                image: "https://image.tmdb.org/t/p/w600_and_h900_bestv2/8Gxv8gSFCU0XGDykEGv7zR1n2ua.jpg"
+            },
+            {
+                id: 3,
+                title: "Spider-Man: Across the Spider-Verse",
+                year: "2023",
+                genre: "Animation / Action",
+                description: "Miles Morales catapults across the Multiverse, where he encounters a team of Spider-People charged with protecting its very existence.",
+                image: "https://image.tmdb.org/t/p/w600_and_h900_bestv2/8Vt6mWEReuy4Of61Lnj5Xj704m8.jpg"
+            },
+            {
+                id: 4,
+                title: "Everything Everywhere All at Once",
+                year: "2022",
+                genre: "Action / Sci-Fi",
+                description: "A middle-aged Chinese immigrant is swept up into an insane adventure in which she alone can save existence by exploring other universes.",
+                image: "https://image.tmdb.org/t/p/w600_and_h900_bestv2/w3LxiVYdWWRvEVdn5RYq6jIqkb1.jpg"
+            },
+            {
+                id: 5,
+                title: "Top Gun: Maverick",
+                year: "2022",
+                genre: "Action / Drama",
+                description: "After thirty years, Maverick is still pushing the envelope as a top naval aviator, but must confront ghosts of his past when he leads TOP GUN's elite graduates on a mission.",
+                image: "https://image.tmdb.org/t/p/w600_and_h900_bestv2/62HCnUTziyWcpDaBO2i1DX17ljH.jpg"
+            },
+            {
+                id: 6,
+                title: "The Batman",
+                year: "2022",
+                genre: "Action / Crime",
+                description: "When a sadistic serial killer begins murdering key political figures in Gotham, Batman is forced to investigate the city's hidden corruption.",
+                image: "https://image.tmdb.org/t/p/w600_and_h900_bestv2/74xTEgt7R36Fpooo50r9T25onhq.jpg"
+            },
+            {
+                id: 7,
+                title: "Knives Out",
+                year: "2019",
+                genre: "Comedy / Crime",
+                description: "A detective investigates the death of a patriarch of an eccentric, combative family.",
+                image: "https://image.tmdb.org/t/p/w600_and_h900_bestv2/pThyQovXQrwVm0sW5E2TeWi1iyh.jpg"
+            }
+        ];
+
+        let movies = [...movieDatabase]; // Working copy of movies
+        let watchlist = [];
+        let allCards;
+        const cardContainer = document.getElementById('card-container');
+        const emptyState = document.getElementById('empty-state');
+        const watchlistItemsContainer = document.getElementById('watchlist-items');
+        const emptyWatchlistMsg = document.getElementById('empty-watchlist-msg');
+        const nopeButton = document.getElementById('nope');
+        const loveButton = document.getElementById('love');
+
+        function initCards() {
+            cardContainer.innerHTML = ''; // Clear container
+            cardContainer.appendChild(emptyState); // Keep empty state in container
+            emptyState.style.display = 'none';
+
+            // Iterate backwards to stack them correctly (first item on top)
+            for (let i = movies.length - 1; i >= 0; i--) {
+                const movie = movies[i];
+                const card = document.createElement('div');
+                card.className = 'tinder--card';
+                card.dataset.id = movie.id;
+
+                card.innerHTML = `
+                    <div class="stamp like">WATCH</div>
+                    <div class="stamp nope">PASS</div>
+                    <img src="${movie.image}" alt="${movie.title}" onerror="this.src='https://placehold.co/600x900/e2e8f0/475569?text=Poster+Unavailable'">
+                    <h3>${movie.title}</h3>
+                    <div class="meta-info">${movie.year} • ${movie.genre}</div>
+                    <p>${movie.description}</p>
+                `;
+                cardContainer.appendChild(card);
+            }
+
+            allCards = document.querySelectorAll('.tinder--card');
+            
+            // Re-bind hammer instances after re-creating elements
+            bindDragEvents();
+            
+            updateCardStack();
+        }
+
+        function updateCardStack() {
+            allCards = document.querySelectorAll('.tinder--card:not(.removed)');
+
+            if (allCards.length === 0) {
+                emptyState.style.display = 'flex';
+                nopeButton.disabled = true;
+                loveButton.disabled = true;
+                nopeButton.style.opacity = '0.5';
+                loveButton.style.opacity = '0.5';
+                return;
+            }
+
+            nopeButton.disabled = false;
+            loveButton.disabled = false;
+            nopeButton.style.opacity = '1';
+            loveButton.style.opacity = '1';
+
+            allCards.forEach(function (el, index) {
+                el.style.display = 'flex';
+                el.style.zIndex = allCards.length - index;
+                
+                // Top card is fully visible and scaled 1
+                // Cards below scale down and translate down to create a stack effect
+                let scale = 1 - (index * 0.04);
+                let translateY = index * 10;
+                
+                // Ensure scale doesn't go negative or too small if many cards
+                if(scale < 0.8) scale = 0.8;
+                if(index > 3) el.style.display = 'none'; // Only render top few for performance
+
+                el.style.transform = `scale(${scale}) translateY(${translateY}px)`;
+                el.style.opacity = index > 2 ? 0 : (1 - (index * 0.2));
+            });
+        }
+
+        function bindDragEvents() {
+            allCards.forEach(function (el) {
+                let hammer = new Hammer(el);
+
+                // Listen to pan events
+                hammer.on('pan', function (ev) {
+                    el.classList.add('moving');
+                    // Reset stack positions while moving top card
+                    if (el === allCards[0]) {
+                         // Only affect cards underneath if we are moving the top one
+                         for(let i=1; i<allCards.length; i++) {
+                            let scale = 1 - (i * 0.04);
+                            let translateY = i * 10;
+                            // As user drags, background cards scale up slightly
+                            let distance = Math.abs(ev.deltaX);
+                            let progress = Math.min(distance / (window.innerWidth/2), 1);
+                            
+                            scale = scale + (0.04 * progress);
+                            translateY = translateY - (10 * progress);
+                            
+                            allCards[i].style.transform = `scale(${scale}) translateY(${translateY}px)`;
+                         }
+                    }
+
+                    // Move the card
+                    let xMulti = ev.deltaX * 0.03;
+                    let yMulti = ev.deltaY / 80;
+                    let rotate = xMulti * yMulti;
+
+                    el.style.transform = `translate(${ev.deltaX}px, ${ev.deltaY}px) rotate(${rotate}deg)`;
+
+                    // Show stamps based on drag direction
+                    let likeStamp = el.querySelector('.stamp.like');
+                    let nopeStamp = el.querySelector('.stamp.nope');
+
+                    if (ev.deltaX > 0) { // Dragging right
+                        let opacity = ev.deltaX / 100;
+                        likeStamp.style.opacity = Math.min(opacity, 1);
+                        nopeStamp.style.opacity = 0;
+                    } else { // Dragging left
+                        let opacity = Math.abs(ev.deltaX) / 100;
+                        nopeStamp.style.opacity = Math.min(opacity, 1);
+                        likeStamp.style.opacity = 0;
+                    }
+                });
+
+                // When user releases the card
+                hammer.on('panend', function (ev) {
+                    el.classList.remove('moving');
+                    
+                    let likeStamp = el.querySelector('.stamp.like');
+                    let nopeStamp = el.querySelector('.stamp.nope');
+
+                    let moveOutWidth = document.body.clientWidth;
+                    let keep = Math.abs(ev.deltaX) < 80 || Math.abs(ev.velocityX) < 0.5;
+
+                    if (keep) {
+                        // Snap back to center
+                        el.style.transform = '';
+                        likeStamp.style.opacity = 0;
+                        nopeStamp.style.opacity = 0;
+                        
+                        // Reset background cards
+                        updateCardStack();
+                    } else {
+                        // Card swiped away
+                        let endX = Math.max(Math.abs(ev.velocityX) * moveOutWidth, moveOutWidth);
+                        let toX = ev.deltaX > 0 ? endX : -endX;
+                        let endY = Math.abs(ev.velocityY) * moveOutWidth;
+                        let toY = ev.deltaY > 0 ? endY : -endY;
+                        let xMulti = ev.deltaX * 0.03;
+                        let yMulti = ev.deltaY / 80;
+                        let rotate = xMulti * yMulti;
+
+                        el.style.transform = `translate(${toX}px, ${toY + ev.deltaY}px) rotate(${rotate}deg)`;
+                        el.classList.add('removed');
+                        
+                        // Determine action based on direction
+                        let isLike = ev.deltaX > 0;
+                        processSwipe(el, isLike);
+                    }
+                });
+            });
+        }
+
+        function processSwipe(cardEl, isLike) {
+            const movieId = parseInt(cardEl.dataset.id);
+            const movie = movieDatabase.find(m => m.id === movieId);
+
+            if (isLike && movie) {
+                addToWatchlist(movie);
+            }
+
+            // Remove card from DOM after transition
+            setTimeout(() => {
+                if (cardEl.parentNode) {
+                    cardEl.parentNode.removeChild(cardEl);
+                }
+                updateCardStack();
+            }, 300); // Matches CSS transition time
+        }
+
+        function handleButtonClick(isLike) {
+            allCards = document.querySelectorAll('.tinder--card:not(.removed)');
+            if (!allCards.length) return;
+
+            const card = allCards[0]; // Top card
+            card.classList.add('removed');
+
+            const moveOutWidth = document.body.clientWidth * 1.5;
+            const toX = isLike ? moveOutWidth : -moveOutWidth;
+            
+            // Show stamp
+            const stampClass = isLike ? '.stamp.like' : '.stamp.nope';
+            card.querySelector(stampClass).style.opacity = 1;
+
+            // Animate card out
+            card.style.transform = `translate(${toX}px, -100px) rotate(${isLike ? 30 : -30}deg)`;
+
+            processSwipe(card, isLike);
+        }
+
+        function addToWatchlist(movie) {
+            // Check if already in list
+            if (!watchlist.find(m => m.id === movie.id)) {
+                watchlist.push(movie);
+                renderWatchlist();
+            }
+        }
+
+        function renderWatchlist() {
+            if (watchlist.length > 0) {
+                emptyWatchlistMsg.style.display = 'none';
+            } else {
+                emptyWatchlistMsg.style.display = 'block';
+            }
+
+            // Clear current list (except the empty message)
+            const items = watchlistItemsContainer.querySelectorAll('.watchlist-item');
+            items.forEach(item => item.remove());
+
+            // Render new list
+            watchlist.forEach(movie => {
+                const item = document.createElement('div');
+                item.className = 'watchlist-item';
+                item.innerHTML = `
+                    <img src="${movie.image}" alt="${movie.title}" onerror="this.src='https://placehold.co/600x900/e2e8f0/475569?text=N/A'">
+                    <div class="watchlist-item-info">
+                        <h4>${movie.title}</h4>
+                        <span>${movie.year} • ${movie.genre}</span>
+                    </div>
+                `;
+                watchlistItemsContainer.appendChild(item);
+            });
+        }
+
+        const watchlistPanel = document.getElementById('watchlist-panel');
+        const backdrop = document.getElementById('watchlist-backdrop');
+
+        function toggleWatchlist() {
+            watchlistPanel.classList.toggle('open');
+            if (watchlistPanel.classList.contains('open')) {
+                backdrop.classList.remove('hidden');
+                // Small delay to allow display:block to apply before opacity transition
+                setTimeout(() => backdrop.style.opacity = '1', 10);
+            } else {
+                backdrop.style.opacity = '0';
+                setTimeout(() => backdrop.classList.add('hidden'), 300);
+            }
+        }
+
+        document.getElementById('open-watchlist').addEventListener('click', toggleWatchlist);
+        document.getElementById('close-watchlist').addEventListener('click', toggleWatchlist);
+
+        function resetApp() {
+            movies = [...movieDatabase]; // Reset array
+            initCards();
+        }
+
+        // Include Hammer.js via CDN for touch/drag physics
+        const script = document.createElement('script');
+        script.src = 'https://cdnjs.cloudflare.com/ajax/libs/hammer.js/2.0.8/hammer.min.js';
+        script.onload = () => {
+            // Initialize app once Hammer is loaded
+            initCards();
+        };
+        document.head.appendChild(script);
+
+    </script>
+</body>
+</html>
