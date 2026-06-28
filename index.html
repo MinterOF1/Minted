@@ -1,644 +1,436 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="en" class="scroll-smooth">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>FlickTinder - Swipe Movies</title>
-    <!-- Tailwind CSS for rapid styling -->
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>British Army | Roblox Roleplay</title>
+    <meta name="description" content="The premier British Army roleplay group on Roblox. Enlist today and serve the Crown!">
+    
+    <!-- Tailwind CSS -->
     <script src="https://cdn.tailwindcss.com"></script>
-    <!-- Font Awesome for Icons -->
+    
+    <!-- FontAwesome -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     
+    <!-- Google Fonts -->
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;800&family=Oswald:wght@500;700&display=swap" rel="stylesheet">
+
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    fontFamily: {
+                        sans: ['Inter', 'sans-serif'],
+                        military: ['Oswald', 'sans-serif'],
+                    },
+                    colors: {
+                        military: {
+                            green: '#4b5320', // Army green
+                            dark: '#1a1c18',  // Very dark green/black
+                            red: '#cc0000',   // British red
+                        }
+                    }
+                }
+            }
+        }
+    </script>
+
     <style>
-        :root {
-            --bg-color: #f3f4f6;
-            --card-width: 90vw;
-            --card-max-width: 400px;
-            --card-height: 70vh;
-            --card-max-height: 600px;
-        }
-
+        /* Custom Styles & Animations */
         body {
-            background-color: var(--bg-color);
-            overflow: hidden; /* Prevent scrolling while swiping */
-            touch-action: none; /* Prevent browser default touch actions like pull-to-refresh */
-            font-family: 'Inter', sans-serif;
+            background-color: #0f1115; /* Sleek dark slate */
+            color: #f3f4f6;
         }
 
-        /* Container for the stack of cards */
-        .tinder {
-            width: 100vw;
-            height: 100vh;
-            overflow: hidden;
-            display: flex;
-            flex-direction: column;
-            position: relative;
+        .hero-pattern {
+            background-image: 
+                linear-gradient(to bottom, rgba(15, 17, 21, 0.8), rgba(15, 17, 21, 1)),
+                url('https://placehold.co/1920x1080/1a1c18/333333?text=Military+Operations');
+            background-size: cover;
+            background-position: center;
+            background-attachment: fixed;
         }
 
-        .tinder--cards {
-            flex-grow: 1;
-            padding-top: 20px;
-            text-align: center;
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            z-index: 1;
-            position: relative;
+        /* Scrollbar */
+        ::-webkit-scrollbar {
+            width: 8px;
+        }
+        ::-webkit-scrollbar-track {
+            background: #0f1115; 
+        }
+        ::-webkit-scrollbar-thumb {
+            background: #4b5320; 
+            border-radius: 4px;
+        }
+        ::-webkit-scrollbar-thumb:hover {
+            background: #5c6628; 
         }
 
-        /* The individual card styling */
-        .tinder--card {
-            display: none; /* Hidden by default, JS handles showing the top ones */
-            position: absolute;
-            width: var(--card-width);
-            max-width: var(--card-max-width);
-            height: var(--card-height);
-            max-height: var(--card-max-height);
-            background: #FFFFFF;
-            border-radius: 20px;
-            overflow: hidden;
-            box-shadow: 0 10px 20px rgba(0,0,0,0.15);
-            transition: transform 0.3s ease, opacity 0.3s ease; /* Smooth transition for snap back */
-            cursor: grab;
-            user-select: none;
-            /* Flex layout within the card */
-            flex-direction: column;
-            will-change: transform;
-        }
-
-        /* When actively dragging, remove transition so it sticks to finger/mouse */
-        .tinder--card.moving {
-            transition: none;
-            cursor: grabbing;
-        }
-
-        .tinder--card img {
-            width: 100%;
-            height: 65%; /* Image takes up most of the card */
-            object-fit: cover;
-            pointer-events: none; /* Prevent image dragging issues */
-        }
-
-        .tinder--card h3 {
-            margin-top: 15px;
-            font-size: 24px;
-            font-weight: bold;
-            padding: 0 20px;
-            text-align: left;
-            color: #1f2937;
-        }
-        
-        .tinder--card .meta-info {
-            padding: 5px 20px;
-            text-align: left;
-            color: #6b7280;
-            font-size: 14px;
-            font-weight: 500;
-        }
-
-        .tinder--card p {
-            padding: 10px 20px 20px;
-            font-size: 14px;
-            color: #4b5563;
-            text-align: left;
-            line-height: 1.4;
-            flex-grow: 1;
-            overflow: hidden;
-            display: -webkit-box;
-            -webkit-line-clamp: 4; /* Limit description lines */
-            -webkit-box-orient: vertical;
-        }
-
-        .tinder--buttons {
-            flex: 0 0 100px;
-            text-align: center;
-            padding-bottom: 20px;
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            gap: 20px;
-            z-index: 10;
-        }
-
-        /* Individual action buttons */
-        .tinder--buttons button {
-            border-radius: 50%;
-            width: 70px;
-            height: 70px;
-            border: none;
-            background: #FFF;
-            box-shadow: 0 4px 15px rgba(0,0,0,0.1);
-            display: inline-flex;
-            justify-content: center;
-            align-items: center;
-            cursor: pointer;
-            transition: transform 0.2s, box-shadow 0.2s;
-            outline: none;
-            -webkit-tap-highlight-color: transparent;
-        }
-
-        .tinder--buttons button:hover {
-            transform: scale(1.05);
-            box-shadow: 0 6px 20px rgba(0,0,0,0.15);
-        }
-
-        .tinder--buttons button:active {
-            transform: scale(0.95);
-        }
-
-        .tinder--buttons button i {
-            font-size: 32px;
-        }
-
-        #nope i { color: #ff5252; }
-        #love i { color: #4CAF50; }
-        #watchlist-btn i { color: #2196F3; font-size: 24px; }
-        
-        #watchlist-btn { width: 50px; height: 50px; }
-
-        .stamp {
-            position: absolute;
-            top: 40px;
-            padding: 5px 15px;
-            border: 4px solid;
-            border-radius: 10px;
-            font-size: 32px;
-            font-weight: 800;
-            text-transform: uppercase;
+        /* Scroll Reveal Animation Classes */
+        .reveal {
             opacity: 0;
-            z-index: 10;
-            pointer-events: none;
+            transform: translateY(30px);
+            transition: all 0.8s ease-out;
+        }
+        .reveal.active {
+            opacity: 1;
+            transform: translateY(0);
         }
 
-        .stamp.nope {
-            color: #ff5252;
-            border-color: #ff5252;
-            right: 40px;
-            transform: rotate(15deg);
+        /* Glitch effect on hover for buttons */
+        .btn-glitch {
+            position: relative;
+            overflow: hidden;
         }
-
-        .stamp.like {
-            color: #4CAF50;
-            border-color: #4CAF50;
-            left: 40px;
-            transform: rotate(-15deg);
-        }
-
-        #watchlist-panel {
-            position: fixed;
-            top: 0;
-            right: -100%;
-            width: 100%;
-            max-width: 400px;
-            height: 100vh;
-            background: white;
-            box-shadow: -5px 0 15px rgba(0,0,0,0.1);
-            z-index: 50;
-            transition: right 0.3s ease-in-out;
-            display: flex;
-            flex-direction: column;
-        }
-
-        #watchlist-panel.open {
-            right: 0;
-        }
-
-        .watchlist-header {
-            padding: 20px;
-            border-bottom: 1px solid #eee;
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-        }
-
-        .watchlist-content {
-            flex-grow: 1;
-            overflow-y: auto;
-            padding: 20px;
-        }
-
-        .watchlist-item {
-            display: flex;
-            gap: 15px;
-            margin-bottom: 15px;
-            align-items: center;
-            border-bottom: 1px solid #f3f4f6;
-            padding-bottom: 10px;
-        }
-
-        .watchlist-item img {
-            width: 60px;
-            height: 90px;
-            object-fit: cover;
-            border-radius: 8px;
-        }
-
-        .watchlist-item-info h4 {
-            font-weight: bold;
-            color: #1f2937;
-            margin-bottom: 5px;
-        }
-        
-        .watchlist-item-info span {
-            font-size: 12px;
-            color: #6b7280;
-        }
-        
-        /* Loading/Empty State */
-        .empty-state {
-            text-align: center;
-            padding: 40px 20px;
-            color: #9ca3af;
-            display: none; /* Shown by JS when stack is empty */
-            flex-direction: column;
-            align-items: center;
-            justify-content: center;
-            height: 100%;
+        .btn-glitch::after {
+            content: '';
             position: absolute;
-            width: 100%;
-            z-index: 0;
+            top: 0;
+            left: -100%;
+            width: 50%;
+            height: 100%;
+            background: linear-gradient(to right, rgba(255,255,255,0) 0%, rgba(255,255,255,0.3) 50%, rgba(255,255,255,0) 100%);
+            transform: skewX(-25deg);
+            transition: all 0.5s ease;
         }
-        
-        .empty-state i {
-            font-size: 48px;
-            margin-bottom: 15px;
-            color: #d1d5db;
+        .btn-glitch:hover::after {
+            left: 150%;
         }
     </style>
 </head>
-<body>
+<body class="antialiased selection:bg-military-red selection:text-white">
 
-    <div class="tinder">
-        <!-- Header -->
-        <div class="flex justify-between items-center p-4 bg-white shadow-sm z-10">
-            <div class="text-2xl font-black text-rose-500 tracking-tighter flex items-center gap-2">
-                <i class="fa-solid fa-film"></i> FlickMatch
-            </div>
-            <button id="open-watchlist" class="text-gray-500 hover:text-gray-800 transition">
-                <i class="fa-solid fa-list-ul text-xl"></i>
-            </button>
-        </div>
-
-        <div class="tinder--cards" id="card-container">
-            <!-- Background Empty State -->
-            <div class="empty-state" id="empty-state">
-                <i class="fa-solid fa-ticket-simple"></i>
-                <h2 class="text-xl font-bold text-gray-700">Out of Movies!</h2>
-                <p class="mt-2 text-sm">You've swiped through all available movies.</p>
-                <button onclick="resetApp()" class="mt-6 px-6 py-2 bg-rose-500 text-white rounded-full font-semibold hover:bg-rose-600 transition">Start Over</button>
-            </div>
-            <!-- Cards will be injected here -->
-        </div>
-
-        <div class="tinder--buttons">
-            <button id="nope" onclick="handleButtonClick(false)"><i class="fa-solid fa-xmark"></i></button>
-            <button id="love" onclick="handleButtonClick(true)"><i class="fa-solid fa-heart"></i></button>
-        </div>
-    </div>
-
-    <div id="watchlist-panel">
-        <div class="watchlist-header">
-            <h2 class="text-xl font-bold text-gray-800">Your Watchlist</h2>
-            <button id="close-watchlist" class="text-gray-500 hover:text-gray-800 p-2">
-                <i class="fa-solid fa-xmark text-xl"></i>
-            </button>
-        </div>
-        <div class="watchlist-content" id="watchlist-items">
-            <!-- Watchlist items will be injected here -->
-            <div class="text-center text-gray-500 mt-10" id="empty-watchlist-msg">
-                Your watchlist is empty.<br>Start swiping right!
-            </div>
-        </div>
-    </div>
-
-    <!-- Backdrop for watchlist -->
-    <div id="watchlist-backdrop" class="fixed inset-0 bg-black/50 z-40 hidden transition-opacity" onclick="toggleWatchlist()"></div>
-
-    <script>
-        // Simulated Database of Movies
-        const movieDatabase = [
-            {
-                id: 1,
-                title: "Dune: Part Two",
-                year: "2024",
-                genre: "Sci-Fi / Adventure",
-                description: "Paul Atreides unites with Chani and the Fremen while on a warpath of revenge against the conspirators who destroyed his family.",
-                image: "https://image.tmdb.org/t/p/w600_and_h900_bestv2/1pdfLvkbY9ohJlCjQH2JGqqut1V.jpg"
-            },
-            {
-                id: 2,
-                title: "Oppenheimer",
-                year: "2023",
-                genre: "Biography / Drama",
-                description: "The story of American scientist J. Robert Oppenheimer and his role in the development of the atomic bomb.",
-                image: "https://image.tmdb.org/t/p/w600_and_h900_bestv2/8Gxv8gSFCU0XGDykEGv7zR1n2ua.jpg"
-            },
-            {
-                id: 3,
-                title: "Spider-Man: Across the Spider-Verse",
-                year: "2023",
-                genre: "Animation / Action",
-                description: "Miles Morales catapults across the Multiverse, where he encounters a team of Spider-People charged with protecting its very existence.",
-                image: "https://image.tmdb.org/t/p/w600_and_h900_bestv2/8Vt6mWEReuy4Of61Lnj5Xj704m8.jpg"
-            },
-            {
-                id: 4,
-                title: "Everything Everywhere All at Once",
-                year: "2022",
-                genre: "Action / Sci-Fi",
-                description: "A middle-aged Chinese immigrant is swept up into an insane adventure in which she alone can save existence by exploring other universes.",
-                image: "https://image.tmdb.org/t/p/w600_and_h900_bestv2/w3LxiVYdWWRvEVdn5RYq6jIqkb1.jpg"
-            },
-            {
-                id: 5,
-                title: "Top Gun: Maverick",
-                year: "2022",
-                genre: "Action / Drama",
-                description: "After thirty years, Maverick is still pushing the envelope as a top naval aviator, but must confront ghosts of his past when he leads TOP GUN's elite graduates on a mission.",
-                image: "https://image.tmdb.org/t/p/w600_and_h900_bestv2/62HCnUTziyWcpDaBO2i1DX17ljH.jpg"
-            },
-            {
-                id: 6,
-                title: "The Batman",
-                year: "2022",
-                genre: "Action / Crime",
-                description: "When a sadistic serial killer begins murdering key political figures in Gotham, Batman is forced to investigate the city's hidden corruption.",
-                image: "https://image.tmdb.org/t/p/w600_and_h900_bestv2/74xTEgt7R36Fpooo50r9T25onhq.jpg"
-            },
-            {
-                id: 7,
-                title: "Knives Out",
-                year: "2019",
-                genre: "Comedy / Crime",
-                description: "A detective investigates the death of a patriarch of an eccentric, combative family.",
-                image: "https://image.tmdb.org/t/p/w600_and_h900_bestv2/pThyQovXQrwVm0sW5E2TeWi1iyh.jpg"
-            }
-        ];
-
-        let movies = [...movieDatabase]; // Working copy of movies
-        let watchlist = [];
-        let allCards;
-        const cardContainer = document.getElementById('card-container');
-        const emptyState = document.getElementById('empty-state');
-        const watchlistItemsContainer = document.getElementById('watchlist-items');
-        const emptyWatchlistMsg = document.getElementById('empty-watchlist-msg');
-        const nopeButton = document.getElementById('nope');
-        const loveButton = document.getElementById('love');
-
-        function initCards() {
-            cardContainer.innerHTML = ''; // Clear container
-            cardContainer.appendChild(emptyState); // Keep empty state in container
-            emptyState.style.display = 'none';
-
-            // Iterate backwards to stack them correctly (first item on top)
-            for (let i = movies.length - 1; i >= 0; i--) {
-                const movie = movies[i];
-                const card = document.createElement('div');
-                card.className = 'tinder--card';
-                card.dataset.id = movie.id;
-
-                card.innerHTML = `
-                    <div class="stamp like">WATCH</div>
-                    <div class="stamp nope">PASS</div>
-                    <img src="${movie.image}" alt="${movie.title}" onerror="this.src='https://placehold.co/600x900/e2e8f0/475569?text=Poster+Unavailable'">
-                    <h3>${movie.title}</h3>
-                    <div class="meta-info">${movie.year} • ${movie.genre}</div>
-                    <p>${movie.description}</p>
-                `;
-                cardContainer.appendChild(card);
-            }
-
-            allCards = document.querySelectorAll('.tinder--card');
-            
-            // Re-bind hammer instances after re-creating elements
-            bindDragEvents();
-            
-            updateCardStack();
-        }
-
-        function updateCardStack() {
-            allCards = document.querySelectorAll('.tinder--card:not(.removed)');
-
-            if (allCards.length === 0) {
-                emptyState.style.display = 'flex';
-                nopeButton.disabled = true;
-                loveButton.disabled = true;
-                nopeButton.style.opacity = '0.5';
-                loveButton.style.opacity = '0.5';
-                return;
-            }
-
-            nopeButton.disabled = false;
-            loveButton.disabled = false;
-            nopeButton.style.opacity = '1';
-            loveButton.style.opacity = '1';
-
-            allCards.forEach(function (el, index) {
-                el.style.display = 'flex';
-                el.style.zIndex = allCards.length - index;
-                
-                // Top card is fully visible and scaled 1
-                // Cards below scale down and translate down to create a stack effect
-                let scale = 1 - (index * 0.04);
-                let translateY = index * 10;
-                
-                // Ensure scale doesn't go negative or too small if many cards
-                if(scale < 0.8) scale = 0.8;
-                if(index > 3) el.style.display = 'none'; // Only render top few for performance
-
-                el.style.transform = `scale(${scale}) translateY(${translateY}px)`;
-                el.style.opacity = index > 2 ? 0 : (1 - (index * 0.2));
-            });
-        }
-
-        function bindDragEvents() {
-            allCards.forEach(function (el) {
-                let hammer = new Hammer(el);
-
-                // Listen to pan events
-                hammer.on('pan', function (ev) {
-                    el.classList.add('moving');
-                    // Reset stack positions while moving top card
-                    if (el === allCards[0]) {
-                         // Only affect cards underneath if we are moving the top one
-                         for(let i=1; i<allCards.length; i++) {
-                            let scale = 1 - (i * 0.04);
-                            let translateY = i * 10;
-                            // As user drags, background cards scale up slightly
-                            let distance = Math.abs(ev.deltaX);
-                            let progress = Math.min(distance / (window.innerWidth/2), 1);
-                            
-                            scale = scale + (0.04 * progress);
-                            translateY = translateY - (10 * progress);
-                            
-                            allCards[i].style.transform = `scale(${scale}) translateY(${translateY}px)`;
-                         }
-                    }
-
-                    // Move the card
-                    let xMulti = ev.deltaX * 0.03;
-                    let yMulti = ev.deltaY / 80;
-                    let rotate = xMulti * yMulti;
-
-                    el.style.transform = `translate(${ev.deltaX}px, ${ev.deltaY}px) rotate(${rotate}deg)`;
-
-                    // Show stamps based on drag direction
-                    let likeStamp = el.querySelector('.stamp.like');
-                    let nopeStamp = el.querySelector('.stamp.nope');
-
-                    if (ev.deltaX > 0) { // Dragging right
-                        let opacity = ev.deltaX / 100;
-                        likeStamp.style.opacity = Math.min(opacity, 1);
-                        nopeStamp.style.opacity = 0;
-                    } else { // Dragging left
-                        let opacity = Math.abs(ev.deltaX) / 100;
-                        nopeStamp.style.opacity = Math.min(opacity, 1);
-                        likeStamp.style.opacity = 0;
-                    }
-                });
-
-                // When user releases the card
-                hammer.on('panend', function (ev) {
-                    el.classList.remove('moving');
-                    
-                    let likeStamp = el.querySelector('.stamp.like');
-                    let nopeStamp = el.querySelector('.stamp.nope');
-
-                    let moveOutWidth = document.body.clientWidth;
-                    let keep = Math.abs(ev.deltaX) < 80 || Math.abs(ev.velocityX) < 0.5;
-
-                    if (keep) {
-                        // Snap back to center
-                        el.style.transform = '';
-                        likeStamp.style.opacity = 0;
-                        nopeStamp.style.opacity = 0;
-                        
-                        // Reset background cards
-                        updateCardStack();
-                    } else {
-                        // Card swiped away
-                        let endX = Math.max(Math.abs(ev.velocityX) * moveOutWidth, moveOutWidth);
-                        let toX = ev.deltaX > 0 ? endX : -endX;
-                        let endY = Math.abs(ev.velocityY) * moveOutWidth;
-                        let toY = ev.deltaY > 0 ? endY : -endY;
-                        let xMulti = ev.deltaX * 0.03;
-                        let yMulti = ev.deltaY / 80;
-                        let rotate = xMulti * yMulti;
-
-                        el.style.transform = `translate(${toX}px, ${toY + ev.deltaY}px) rotate(${rotate}deg)`;
-                        el.classList.add('removed');
-                        
-                        // Determine action based on direction
-                        let isLike = ev.deltaX > 0;
-                        processSwipe(el, isLike);
-                    }
-                });
-            });
-        }
-
-        function processSwipe(cardEl, isLike) {
-            const movieId = parseInt(cardEl.dataset.id);
-            const movie = movieDatabase.find(m => m.id === movieId);
-
-            if (isLike && movie) {
-                addToWatchlist(movie);
-            }
-
-            // Remove card from DOM after transition
-            setTimeout(() => {
-                if (cardEl.parentNode) {
-                    cardEl.parentNode.removeChild(cardEl);
-                }
-                updateCardStack();
-            }, 300); // Matches CSS transition time
-        }
-
-        function handleButtonClick(isLike) {
-            allCards = document.querySelectorAll('.tinder--card:not(.removed)');
-            if (!allCards.length) return;
-
-            const card = allCards[0]; // Top card
-            card.classList.add('removed');
-
-            const moveOutWidth = document.body.clientWidth * 1.5;
-            const toX = isLike ? moveOutWidth : -moveOutWidth;
-            
-            // Show stamp
-            const stampClass = isLike ? '.stamp.like' : '.stamp.nope';
-            card.querySelector(stampClass).style.opacity = 1;
-
-            // Animate card out
-            card.style.transform = `translate(${toX}px, -100px) rotate(${isLike ? 30 : -30}deg)`;
-
-            processSwipe(card, isLike);
-        }
-
-        function addToWatchlist(movie) {
-            // Check if already in list
-            if (!watchlist.find(m => m.id === movie.id)) {
-                watchlist.push(movie);
-                renderWatchlist();
-            }
-        }
-
-        function renderWatchlist() {
-            if (watchlist.length > 0) {
-                emptyWatchlistMsg.style.display = 'none';
-            } else {
-                emptyWatchlistMsg.style.display = 'block';
-            }
-
-            // Clear current list (except the empty message)
-            const items = watchlistItemsContainer.querySelectorAll('.watchlist-item');
-            items.forEach(item => item.remove());
-
-            // Render new list
-            watchlist.forEach(movie => {
-                const item = document.createElement('div');
-                item.className = 'watchlist-item';
-                item.innerHTML = `
-                    <img src="${movie.image}" alt="${movie.title}" onerror="this.src='https://placehold.co/600x900/e2e8f0/475569?text=N/A'">
-                    <div class="watchlist-item-info">
-                        <h4>${movie.title}</h4>
-                        <span>${movie.year} • ${movie.genre}</span>
+    <!-- Navigation -->
+    <nav class="fixed w-full z-50 transition-all duration-300 backdrop-blur-md bg-black/60 border-b border-white/10" id="navbar">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="flex items-center justify-between h-20">
+                <!-- Logo area -->
+                <div class="flex-shrink-0 flex items-center gap-3 cursor-pointer" onclick="window.scrollTo(0,0)">
+                    <div class="w-10 h-10 bg-military-red rounded-sm flex items-center justify-center transform rotate-45 border-2 border-military-red">
+                        <i class="fa-solid fa-khanda text-white -rotate-45 text-xl"></i>
                     </div>
-                `;
-                watchlistItemsContainer.appendChild(item);
+                    <span class="font-military font-bold text-2xl tracking-wider text-white uppercase shadow-sm">British Army</span>
+                </div>
+                
+                <!-- Desktop Menu -->
+                <div class="hidden md:block">
+                    <div class="ml-10 flex items-baseline space-x-8">
+                        <a href="#home" class="text-gray-300 hover:text-white px-3 py-2 rounded-md text-sm font-medium uppercase tracking-wide transition-colors">Home</a>
+                        <a href="#about" class="text-gray-300 hover:text-white px-3 py-2 rounded-md text-sm font-medium uppercase tracking-wide transition-colors">About</a>
+                        <a href="#regiments" class="text-gray-300 hover:text-white px-3 py-2 rounded-md text-sm font-medium uppercase tracking-wide transition-colors">Regiments</a>
+                        <a href="#enlist" class="bg-military-green hover:bg-military-dark border border-military-green hover:border-gray-500 text-white px-6 py-2 rounded-sm text-sm font-bold uppercase tracking-widest transition-all btn-glitch">Enlist Now</a>
+                    </div>
+                </div>
+
+                <!-- Mobile menu button -->
+                <div class="md:hidden flex items-center">
+                    <button id="mobile-menu-btn" class="text-gray-300 hover:text-white focus:outline-none">
+                        <i class="fa-solid fa-bars text-2xl"></i>
+                    </button>
+                </div>
+            </div>
+        </div>
+
+        <!-- Mobile Menu (Hidden by default) -->
+        <div id="mobile-menu" class="hidden md:hidden bg-black/95 border-b border-white/10 absolute w-full">
+            <div class="px-2 pt-2 pb-3 space-y-1 sm:px-3">
+                <a href="#home" class="text-gray-300 hover:text-white block px-3 py-2 rounded-md text-base font-medium uppercase text-center">Home</a>
+                <a href="#about" class="text-gray-300 hover:text-white block px-3 py-2 rounded-md text-base font-medium uppercase text-center">About</a>
+                <a href="#regiments" class="text-gray-300 hover:text-white block px-3 py-2 rounded-md text-base font-medium uppercase text-center">Regiments</a>
+                <a href="#enlist" class="bg-military-green text-white block px-3 py-2 rounded-md text-base font-bold uppercase text-center mt-4">Enlist Now</a>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Hero Section -->
+    <header id="home" class="relative min-h-screen flex items-center justify-center hero-pattern pt-20">
+        <!-- Overlay -->
+        <div class="absolute inset-0 bg-gradient-to-t from-[#0f1115] via-transparent to-transparent z-0"></div>
+        
+        <div class="relative z-10 text-center px-4 max-w-5xl mx-auto reveal active">
+            <span class="inline-block py-1 px-3 border border-military-red text-military-red uppercase tracking-[0.3em] text-sm font-bold mb-6 bg-black/30 backdrop-blur-sm rounded-sm">
+                Roblox Military Roleplay
+            </span>
+            <h1 class="text-5xl md:text-7xl font-military font-bold text-white uppercase tracking-tight mb-6 leading-tight drop-shadow-lg">
+                Be The Best.<br>
+                <span class="text-transparent bg-clip-text bg-gradient-to-r from-military-green to-gray-400">Defend The Crown.</span>
+            </h1>
+            <p class="mt-4 text-xl md:text-2xl text-gray-300 max-w-3xl mx-auto font-light mb-10 drop-shadow-md">
+                Experience immersive combat, disciplined training, and unmatched camaraderie in the most advanced British Army simulation on Roblox.
+            </p>
+            <div class="flex flex-col sm:flex-row justify-center gap-4">
+                <a href="#enlist" class="bg-military-red hover:bg-red-700 text-white px-8 py-4 rounded-sm text-lg font-bold uppercase tracking-widest transition-all shadow-[0_0_15px_rgba(204,0,0,0.5)] btn-glitch flex items-center justify-center gap-2">
+                    <i class="fa-solid fa-gamepad"></i> Play Roblox
+                </a>
+                <a href="#" class="bg-[#5865F2] hover:bg-[#4752C4] text-white px-8 py-4 rounded-sm text-lg font-bold uppercase tracking-widest transition-all shadow-[0_0_15px_rgba(88,101,242,0.3)] btn-glitch flex items-center justify-center gap-2">
+                    <i class="fa-brands fa-discord"></i> Join Comms
+                </a>
+            </div>
+        </div>
+        
+        <!-- Scroll indicator -->
+        <div class="absolute bottom-10 left-1/2 transform -translate-x-1/2 animate-bounce z-10">
+            <a href="#about" class="text-gray-400 hover:text-white transition-colors">
+                <i class="fa-solid fa-chevron-down text-2xl"></i>
+            </a>
+        </div>
+    </header>
+
+    <!-- About Section -->
+    <section id="about" class="py-24 bg-[#0f1115] relative border-t border-white/5">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="text-center mb-16 reveal">
+                <h2 class="text-3xl md:text-5xl font-military font-bold text-white uppercase tracking-wider mb-4">Our Values</h2>
+                <div class="w-24 h-1 bg-military-red mx-auto"></div>
+                <p class="mt-6 text-gray-400 max-w-2xl mx-auto text-lg">
+                    We are built on a foundation of respect, discipline, and tactical superiority. Joining our ranks means becoming part of a brotherhood dedicated to excellence.
+                </p>
+            </div>
+
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-8">
+                <!-- Value 1 -->
+                <div class="bg-[#1a1c23] p-8 rounded-sm border border-white/5 hover:border-military-green/50 transition-colors reveal shadow-lg group">
+                    <div class="w-14 h-14 bg-black/50 border border-military-green rounded-sm flex items-center justify-center mb-6 group-hover:bg-military-green transition-colors">
+                        <i class="fa-solid fa-shield-halved text-2xl text-military-green group-hover:text-white"></i>
+                    </div>
+                    <h3 class="text-xl font-bold text-white uppercase tracking-wide mb-3 font-military">Integrity</h3>
+                    <p class="text-gray-400 leading-relaxed">
+                        We operate with strict adherence to our moral code. Doing the right thing, whether supervised or not, is expected of every soldier.
+                    </p>
+                </div>
+
+                <!-- Value 2 -->
+                <div class="bg-[#1a1c23] p-8 rounded-sm border border-white/5 hover:border-military-red/50 transition-colors reveal shadow-lg group">
+                    <div class="w-14 h-14 bg-black/50 border border-military-red rounded-sm flex items-center justify-center mb-6 group-hover:bg-military-red transition-colors">
+                        <i class="fa-solid fa-crosshairs text-2xl text-military-red group-hover:text-white"></i>
+                    </div>
+                    <h3 class="text-xl font-bold text-white uppercase tracking-wide mb-3 font-military">Discipline</h3>
+                    <p class="text-gray-400 leading-relaxed">
+                        Through rigorous training and regular events, we mold civilians into coordinated, highly effective units capable of any operation.
+                    </p>
+                </div>
+
+                <!-- Value 3 -->
+                <div class="bg-[#1a1c23] p-8 rounded-sm border border-white/5 hover:border-blue-500/50 transition-colors reveal shadow-lg group">
+                    <div class="w-14 h-14 bg-black/50 border border-blue-500 rounded-sm flex items-center justify-center mb-6 group-hover:bg-blue-500 transition-colors">
+                        <i class="fa-solid fa-users text-2xl text-blue-500 group-hover:text-white"></i>
+                    </div>
+                    <h3 class="text-xl font-bold text-white uppercase tracking-wide mb-3 font-military">Camaraderie</h3>
+                    <p class="text-gray-400 leading-relaxed">
+                        Beyond the battlefield, we are a community. Build lasting friendships with players from around the world in our vibrant communications server.
+                    </p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Regiments Section -->
+    <section id="regiments" class="py-24 bg-[#14161b] relative">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="flex flex-col md:flex-row justify-between items-end mb-16 reveal">
+                <div>
+                    <h2 class="text-3xl md:text-5xl font-military font-bold text-white uppercase tracking-wider mb-4">Divisions</h2>
+                    <div class="w-24 h-1 bg-military-green"></div>
+                    <p class="mt-6 text-gray-400 max-w-xl text-lg">
+                        Find your calling. From frontline infantry combat to covert operations, the British Army offers a path for every type of player.
+                    </p>
+                </div>
+                <a href="#enlist" class="hidden md:inline-flex items-center gap-2 text-military-green hover:text-white font-bold uppercase tracking-wider transition-colors mt-6 md:mt-0 pb-2 border-b border-military-green hover:border-white">
+                    View All Requirements <i class="fa-solid fa-arrow-right"></i>
+                </a>
+            </div>
+
+            <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
+                
+                <!-- Division 1: Infantry -->
+                <div class="bg-[#0f1115] border border-white/5 rounded-sm overflow-hidden group hover:-translate-y-2 transition-transform duration-300 reveal shadow-xl">
+                    <div class="h-40 bg-gradient-to-br from-green-900 to-black relative flex items-center justify-center">
+                        <div class="absolute inset-0 opacity-20 bg-[url('https://www.transparenttextures.com/patterns/carbon-fibre.png')]"></div>
+                        <i class="fa-solid fa-person-rifle text-5xl text-white/50 group-hover:text-white/80 transition-colors z-10"></i>
+                    </div>
+                    <div class="p-6">
+                        <h3 class="text-lg font-bold text-white font-military uppercase mb-2">Infantry Regiment</h3>
+                        <p class="text-sm text-gray-400 mb-4 line-clamp-3">The backbone of the Army. Master the basics of combat, formations, and frontline warfare. Open to all new recruits.</p>
+                        <span class="text-xs font-bold px-2 py-1 bg-gray-800 text-gray-300 rounded-sm border border-gray-700">OPEN</span>
+                    </div>
+                </div>
+
+                <!-- Division 2: RMP -->
+                <div class="bg-[#0f1115] border border-white/5 rounded-sm overflow-hidden group hover:-translate-y-2 transition-transform duration-300 reveal shadow-xl" style="transition-delay: 100ms;">
+                    <div class="h-40 bg-gradient-to-br from-red-900 to-black relative flex items-center justify-center">
+                        <div class="absolute inset-0 opacity-20 bg-[url('https://www.transparenttextures.com/patterns/carbon-fibre.png')]"></div>
+                        <i class="fa-solid fa-handcuffs text-5xl text-white/50 group-hover:text-white/80 transition-colors z-10"></i>
+                    </div>
+                    <div class="p-6">
+                        <h3 class="text-lg font-bold text-white font-military uppercase mb-2">Royal Military Police</h3>
+                        <p class="text-sm text-gray-400 mb-4 line-clamp-3">Maintain law and order on base. Enforce regulations, guard VIPs, and manage moderation within the game.</p>
+                        <span class="text-xs font-bold px-2 py-1 bg-red-900/50 text-red-400 rounded-sm border border-red-900">TRYOUTS ONLY</span>
+                    </div>
+                </div>
+
+                <!-- Division 3: AAC -->
+                <div class="bg-[#0f1115] border border-white/5 rounded-sm overflow-hidden group hover:-translate-y-2 transition-transform duration-300 reveal shadow-xl" style="transition-delay: 200ms;">
+                    <div class="h-40 bg-gradient-to-br from-blue-900 to-black relative flex items-center justify-center">
+                        <div class="absolute inset-0 opacity-20 bg-[url('https://www.transparenttextures.com/patterns/carbon-fibre.png')]"></div>
+                        <i class="fa-solid fa-helicopter text-5xl text-white/50 group-hover:text-white/80 transition-colors z-10"></i>
+                    </div>
+                    <div class="p-6">
+                        <h3 class="text-lg font-bold text-white font-military uppercase mb-2">Army Air Corps</h3>
+                        <p class="text-sm text-gray-400 mb-4 line-clamp-3">Dominate the skies. Provide air support, transport troops, and execute precision strikes using advanced Roblox flight systems.</p>
+                        <span class="text-xs font-bold px-2 py-1 bg-gray-800 text-gray-300 rounded-sm border border-gray-700">INVITE ONLY</span>
+                    </div>
+                </div>
+
+                <!-- Division 4: UKSF -->
+                <div class="bg-[#0f1115] border border-white/5 rounded-sm overflow-hidden group hover:-translate-y-2 transition-transform duration-300 reveal shadow-xl" style="transition-delay: 300ms;">
+                    <div class="h-40 bg-gradient-to-br from-zinc-800 to-black relative flex items-center justify-center">
+                        <div class="absolute inset-0 opacity-20 bg-[url('https://www.transparenttextures.com/patterns/carbon-fibre.png')]"></div>
+                        <i class="fa-solid fa-user-ninja text-5xl text-white/50 group-hover:text-white/80 transition-colors z-10"></i>
+                    </div>
+                    <div class="p-6">
+                        <h3 class="text-lg font-bold text-white font-military uppercase mb-2">Special Forces (UKSF)</h3>
+                        <p class="text-sm text-gray-400 mb-4 line-clamp-3">The elite of the elite. Conduct classified operations, raids, and high-stakes missions behind enemy lines.</p>
+                        <span class="text-xs font-bold px-2 py-1 bg-purple-900/50 text-purple-400 rounded-sm border border-purple-900">CLASSIFIED</span>
+                    </div>
+                </div>
+
+            </div>
+        </div>
+    </section>
+
+    <!-- Enlistment / CTA Section -->
+    <section id="enlist" class="py-20 bg-military-dark relative border-y border-white/10 overflow-hidden">
+        <!-- Abstract background elements -->
+        <div class="absolute -top-24 -right-24 w-96 h-96 bg-military-red opacity-10 rounded-full blur-3xl"></div>
+        <div class="absolute -bottom-24 -left-24 w-96 h-96 bg-military-green opacity-10 rounded-full blur-3xl"></div>
+        
+        <div class="max-w-4xl mx-auto px-4 relative z-10 text-center reveal">
+            <h2 class="text-4xl md:text-6xl font-military font-bold text-white uppercase tracking-widest mb-6">Ready to Serve?</h2>
+            <p class="text-xl text-gray-300 mb-10 font-light">
+                Your journey begins at the Academy. Join our Roblox group and verify in our communications server to get started.
+            </p>
+            
+            <div class="flex flex-col sm:flex-row justify-center items-center gap-6">
+                <!-- Replace '#' with the actual Roblox Group Link -->
+                <a href="#" target="_blank" class="w-full sm:w-auto bg-white text-black hover:bg-gray-200 px-8 py-4 rounded-sm text-lg font-bold uppercase tracking-widest transition-all btn-glitch shadow-xl flex items-center justify-center gap-3">
+                    <i class="fa-solid fa-cube text-xl"></i> Join Roblox Group
+                </a>
+                <!-- Replace '#' with the Discord Link -->
+                <a href="#" target="_blank" class="w-full sm:w-auto bg-[#5865F2] hover:bg-[#4752C4] text-white px-8 py-4 rounded-sm text-lg font-bold uppercase tracking-widest transition-all btn-glitch shadow-xl flex items-center justify-center gap-3">
+                    <i class="fa-brands fa-discord text-xl"></i> Discord Server
+                </a>
+            </div>
+            
+            <div class="mt-8 text-sm text-gray-500 font-mono">
+                <i class="fa-solid fa-circle-info mr-2"></i> Must be 13+ to join communications.
+            </div>
+        </div>
+    </section>
+
+    <!-- Footer -->
+    <footer class="bg-[#0a0b0d] pt-16 pb-8 border-t border-white/5">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="grid grid-cols-1 md:grid-cols-4 gap-12 md:gap-8 mb-12">
+                
+                <div class="col-span-1 md:col-span-2">
+                    <div class="flex items-center gap-3 mb-4">
+                        <i class="fa-solid fa-khanda text-military-red text-2xl"></i>
+                        <span class="font-military font-bold text-xl tracking-wider text-white uppercase">British Army</span>
+                    </div>
+                    <p class="text-gray-500 text-sm max-w-sm">
+                        A dedicated Roblox roleplay community providing a structured, engaging, and realistic military simulation experience. Not affiliated with the real-world British Armed Forces or Roblox Corporation.
+                    </p>
+                </div>
+
+                <div>
+                    <h4 class="text-white font-military font-bold uppercase tracking-wider mb-4">Quick Links</h4>
+                    <ul class="space-y-2">
+                        <li><a href="#home" class="text-gray-500 hover:text-military-red transition-colors text-sm">Home</a></li>
+                        <li><a href="#about" class="text-gray-500 hover:text-military-red transition-colors text-sm">About Us</a></li>
+                        <li><a href="#regiments" class="text-gray-500 hover:text-military-red transition-colors text-sm">Divisions</a></li>
+                        <li><a href="#enlist" class="text-gray-500 hover:text-military-red transition-colors text-sm">Enlistment Info</a></li>
+                    </ul>
+                </div>
+
+                <div>
+                    <h4 class="text-white font-military font-bold uppercase tracking-wider mb-4">Connect</h4>
+                    <div class="flex space-x-4">
+                        <a href="#" class="w-10 h-10 bg-white/5 rounded-sm flex items-center justify-center text-gray-400 hover:bg-[#5865F2] hover:text-white transition-all">
+                            <i class="fa-brands fa-discord"></i>
+                        </a>
+                        <a href="#" class="w-10 h-10 bg-white/5 rounded-sm flex items-center justify-center text-gray-400 hover:bg-gray-200 hover:text-black transition-all">
+                            <i class="fa-solid fa-cube"></i> <!-- Representing Roblox -->
+                        </a>
+                        <a href="#" class="w-10 h-10 bg-white/5 rounded-sm flex items-center justify-center text-gray-400 hover:bg-red-600 hover:text-white transition-all">
+                            <i class="fa-brands fa-youtube"></i>
+                        </a>
+                    </div>
+                </div>
+            </div>
+
+            <div class="border-t border-white/10 pt-8 flex flex-col md:flex-row items-center justify-between">
+                <p class="text-gray-600 text-xs">
+                    &copy; 2024 British Army Roleplay. All rights reserved.
+                </p>
+                <p class="text-gray-600 text-xs mt-2 md:mt-0">
+                    Developed for Roblox.
+                </p>
+            </div>
+        </div>
+    </footer>
+
+    <!-- Scripts -->
+    <script>
+        // Mobile Menu Toggle Logic
+        const btn = document.getElementById('mobile-menu-btn');
+        const menu = document.getElementById('mobile-menu');
+        const menuLinks = menu.querySelectorAll('a');
+
+        btn.addEventListener('click', () => {
+            menu.classList.toggle('hidden');
+        });
+
+        // Close mobile menu when clicking a link
+        menuLinks.forEach(link => {
+            link.addEventListener('click', () => {
+                menu.classList.add('hidden');
             });
-        }
+        });
 
-        const watchlistPanel = document.getElementById('watchlist-panel');
-        const backdrop = document.getElementById('watchlist-backdrop');
-
-        function toggleWatchlist() {
-            watchlistPanel.classList.toggle('open');
-            if (watchlistPanel.classList.contains('open')) {
-                backdrop.classList.remove('hidden');
-                // Small delay to allow display:block to apply before opacity transition
-                setTimeout(() => backdrop.style.opacity = '1', 10);
+        // Navigation Bar Blur effect on scroll
+        const navbar = document.getElementById('navbar');
+        window.addEventListener('scroll', () => {
+            if (window.scrollY > 50) {
+                navbar.classList.add('shadow-lg', 'bg-black/80');
+                navbar.classList.remove('bg-black/60');
             } else {
-                backdrop.style.opacity = '0';
-                setTimeout(() => backdrop.classList.add('hidden'), 300);
+                navbar.classList.remove('shadow-lg', 'bg-black/80');
+                navbar.classList.add('bg-black/60');
             }
-        }
+        });
 
-        document.getElementById('open-watchlist').addEventListener('click', toggleWatchlist);
-        document.getElementById('close-watchlist').addEventListener('click', toggleWatchlist);
+        // Scroll Reveal Animation (Intersection Observer)
+        const revealElements = document.querySelectorAll('.reveal');
 
-        function resetApp() {
-            movies = [...movieDatabase]; // Reset array
-            initCards();
-        }
-
-        // Include Hammer.js via CDN for touch/drag physics
-        const script = document.createElement('script');
-        script.src = 'https://cdnjs.cloudflare.com/ajax/libs/hammer.js/2.0.8/hammer.min.js';
-        script.onload = () => {
-            // Initialize app once Hammer is loaded
-            initCards();
+        const revealOptions = {
+            threshold: 0.15,
+            rootMargin: "0px 0px -50px 0px"
         };
-        document.head.appendChild(script);
 
+        const revealOnScroll = new IntersectionObserver(function(entries, observer) {
+            entries.forEach(entry => {
+                if (!entry.isIntersecting) {
+                    return;
+                } else {
+                    entry.target.classList.add('active');
+                    observer.unobserve(entry.target);
+                }
+            });
+        }, revealOptions);
+
+        revealElements.forEach(el => {
+            revealOnScroll.observe(el);
+        });
     </script>
 </body>
 </html>
