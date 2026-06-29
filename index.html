@@ -1,1049 +1,157 @@
 <!DOCTYPE html>
-<html lang="en" class="scroll-smooth">
+<html lang="en">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>The United Kingdom of Discord | Mock Government Portal</title>
-    
-    <!-- Google Fonts: Playfair Display for Regal Headings, Inter for crisp UI text -->
+    <title>The British Mock Government</title>
+    <meta name="description" content="Welcome to the premier British Mock Government Discord experience. Participate in elections, debate legislation, and shape the realm.">
+    <!-- Google Fonts -->
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&family=Playfair+Display:ital,wght@0,400;0,600;0,700;0,800;1,400&display=swap" rel="stylesheet">
-    
-    <!-- Tailwind CSS CDN -->
-    <script src="https://cdn.tailwindcss.com"></script>
-    
-    <!-- Font Awesome Icons for Westminster theme -->
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-
-    <!-- Tailwind Configuration for customized Royal British palette -->
-    <script>
-        tailwind.config = {
-            theme: {
-                extend: {
-                    fontFamily: {
-                        sans: ['Inter', 'sans-serif'],
-                        serif: ['Playfair Display', 'serif'],
-                    },
-                    colors: {
-                        royal: {
-                            50: '#f0f4f9',
-                            100: '#dee7f3',
-                            500: '#1d4ed8',
-                            900: '#1e3a8a',
-                            950: '#0f1e46',
-                        },
-                        gold: {
-                            400: '#fbbf24',
-                            500: '#f59e0b',
-                            600: '#d97706',
-                        },
-                        crimson: {
-                            600: '#dc2626',
-                            700: '#b91c1c',
-                        }
-                    }
-                }
-            }
-        }
-    </script>
-
-    <style>
-        /* Modern Glassmorphism & Custom scrollbar */
-        ::-webkit-scrollbar {
-            width: 8px;
-        }
-        ::-webkit-scrollbar-track {
-            background: #0f172a;
-        }
-        ::-webkit-scrollbar-thumb {
-            background: #1e293b;
-            border-radius: 4px;
-        }
-        ::-webkit-scrollbar-thumb:hover {
-            background: #334155;
-        }
-        .text-glow {
-            text-shadow: 0 0 15px rgba(245, 158, 11, 0.4);
-        }
-        .royal-glow {
-            box-shadow: 0 0 30px rgba(30, 58, 138, 0.4);
-        }
-    </style>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600&family=Playfair+Display:ital,wght@0,600;0,700;1,600&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="style.css">
 </head>
-<body class="bg-slate-950 text-slate-100 font-sans selection:bg-gold-500 selection:text-slate-950 overflow-x-hidden">
+<body>
 
-    <!-- NAVIGATION BAR -->
-    <nav class="fixed top-0 left-0 right-0 z-50 bg-slate-950/80 backdrop-blur-md border-b border-slate-800/80 transition-all duration-300">
-        <div class="max-w-7xl mx-auto px-6 h-20 flex items-center justify-between">
-            <!-- Brand Logo -->
-            <a href="#" class="flex items-center gap-3 group">
-                <div class="relative flex items-center justify-center w-10 h-10 rounded-lg bg-gradient-to-tr from-royal-900 to-crimson-600 border border-gold-500/30">
-                    <i class="fa-solid fa-crown text-gold-400 text-lg group-hover:rotate-12 transition-transform duration-300"></i>
-                </div>
-                <div class="flex flex-col">
-                    <span class="font-serif font-extrabold text-lg tracking-wide bg-gradient-to-r from-slate-50 via-slate-100 to-gold-400 bg-clip-text text-transparent">THE UNITED KINGDOM</span>
-                    <span class="text-[10px] tracking-[0.25em] text-slate-400 uppercase font-semibold">of Discord</span>
-                </div>
-            </a>
-
-            <!-- Desktop Links -->
-            <div class="hidden md:flex items-center gap-8">
-                <a href="#about" class="text-sm font-medium text-slate-300 hover:text-gold-400 transition-colors">Our Union</a>
-                <a href="#branches" class="text-sm font-medium text-slate-300 hover:text-gold-400 transition-colors">The Palace & Parliament</a>
-                <a href="#quiz" class="text-sm font-medium text-slate-300 hover:text-gold-400 transition-colors">Political Career Quiz</a>
-                <a href="#live-feed" class="text-sm font-medium text-slate-300 hover:text-gold-400 transition-colors">Mock Discord Chamber</a>
+    <!-- Navigation -->
+    <nav class="navbar">
+        <div class="nav-container">
+            <div class="logo">
+                <span class="crown-icon">♔</span>
+                <span>British Mock Gov</span>
             </div>
-
-            <!-- CTA Join Button -->
-            <div class="flex items-center gap-4">
-                <a href="https://discord.gg/" target="_blank" class="relative group hidden sm:inline-flex items-center gap-2 px-5 py-2.5 bg-gradient-to-r from-royal-900 to-royal-500 hover:from-royal-500 hover:to-royal-900 text-white rounded-lg font-semibold text-sm border border-gold-500/30 transition-all duration-300 transform active:scale-95 shadow-md hover:shadow-royal-500/20">
-                    <i class="fa-brands fa-discord text-base"></i>
-                    <span>Take Seat in Parliament</span>
-                </a>
-                
-                <!-- Mobile Menu Button -->
-                <button id="mobile-menu-btn" class="md:hidden flex items-center justify-center p-2 rounded-lg text-slate-400 hover:text-white hover:bg-slate-900 focus:outline-none">
-                    <i class="fa-solid fa-bars text-xl"></i>
-                </button>
-            </div>
-        </div>
-
-        <!-- Mobile Menu -->
-        <div id="mobile-menu" class="hidden md:hidden border-t border-slate-800 bg-slate-950 px-6 py-4 space-y-3">
-            <a href="#about" class="block py-2 text-slate-300 hover:text-gold-400 font-medium">Our Union</a>
-            <a href="#branches" class="block py-2 text-slate-300 hover:text-gold-400 font-medium">The Palace & Parliament</a>
-            <a href="#quiz" class="block py-2 text-slate-300 hover:text-gold-400 font-medium">Political Career Quiz</a>
-            <a href="#live-feed" class="block py-2 text-slate-300 hover:text-gold-400 font-medium">Mock Discord Chamber</a>
-            <a href="https://discord.gg/" target="_blank" class="flex items-center justify-center gap-2 w-full py-3 bg-gradient-to-r from-royal-900 to-royal-500 text-white rounded-lg font-semibold text-sm border border-gold-500/30">
-                <i class="fa-brands fa-discord"></i>
-                <span>Join Discord Server</span>
-            </a>
+            <ul class="nav-links">
+                <li><a href="#about">The Realm</a></li>
+                <li><a href="#structure">Government</a></li>
+                <li><a href="#economy">Economy</a></li>
+            </ul>
+            <a href="#" class="btn btn-primary nav-btn">Join Server</a>
         </div>
     </nav>
 
-    <!-- HERO SECTION -->
-    <header class="relative min-h-screen flex items-center justify-center pt-24 pb-16 overflow-hidden">
-        <!-- Ambient Royal Blue Glow Backgrounds -->
-        <div class="absolute top-1/4 left-1/4 -translate-x-1/2 -translate-y-1/2 w-96 h-96 bg-royal-900/10 rounded-full blur-[100px] pointer-events-none"></div>
-        <div class="absolute bottom-1/4 right-1/4 translate-x-1/2 translate-y-1/2 w-[500px] h-[500px] bg-crimson-600/10 rounded-full blur-[120px] pointer-events-none"></div>
-
-        <!-- Classic British Crest Motif Background Wireframe -->
-        <div class="absolute inset-0 flex items-center justify-center opacity-5 pointer-events-none">
-            <i class="fa-solid fa-shield-halved text-[40rem] text-slate-100"></i>
+    <!-- Hero Section -->
+    <header class="hero">
+        <div class="hero-bg-elements">
+            <div class="glow-red"></div>
+            <div class="glow-blue"></div>
         </div>
-
-        <!-- Hero Content Wrapper -->
-        <div class="max-w-7xl mx-auto px-6 relative z-10 grid grid-cols-1 lg:grid-cols-12 gap-12 items-center">
-            
-            <!-- Hero Left: Mission Statement -->
-            <div class="lg:col-span-7 space-y-6 text-center lg:text-left">
-                <div class="inline-flex items-center gap-2 px-3 py-1.5 rounded-full bg-gold-500/10 border border-gold-500/30 text-gold-400 text-xs font-semibold tracking-wider uppercase mb-2">
-                    <i class="fa-solid fa-building-columns"></i>
-                    A Premium Westminster Experience
-                </div>
-                
-                <h1 class="font-serif font-extrabold text-4xl sm:text-5xl lg:text-6xl xl:text-7xl leading-tight text-slate-100">
-                    Rule. Debate.<br class="hidden sm:inline" />
-                    <span class="bg-gradient-to-r from-gold-400 via-amber-200 to-gold-500 bg-clip-text text-transparent text-glow">Forge Your Legacy</span><br />
-                    In Parliament.
-                </h1>
-
-                <p class="text-slate-400 text-base sm:text-lg max-w-xl mx-auto lg:mx-0 font-normal leading-relaxed">
-                    Step inside the most prestigious political community on Discord. Climb from a humble citizen to a Member of Parliament, amass massive wealth through the economy, build alliances, run campaigns, or earn the favour of the Crown.
-                </p>
-
-                <!-- Hero Quick Stats / Counters -->
-                <div class="grid grid-cols-3 gap-4 max-w-md mx-auto lg:mx-0 py-4">
-                    <div class="p-3 bg-slate-900/50 rounded-xl border border-slate-800">
-                        <div class="text-xl sm:text-2xl font-bold text-slate-100 font-serif">1,500+</div>
-                        <div class="text-xs text-slate-400">Active Lords & MPs</div>
-                    </div>
-                    <div class="p-3 bg-slate-900/50 rounded-xl border border-slate-800">
-                        <div class="text-xl sm:text-2xl font-bold text-slate-100 font-serif">£5M+</div>
-                        <div class="text-xs text-slate-400">Treasury Economy</div>
-                    </div>
-                    <div class="p-3 bg-slate-900/50 rounded-xl border border-slate-800">
-                        <div class="text-xl sm:text-2xl font-bold text-slate-100 font-serif">140+</div>
-                        <div class="text-xs text-slate-400">Bills Enacted</div>
-                    </div>
-                </div>
-
-                <!-- Action Button Cluster -->
-                <div class="flex flex-col sm:flex-row items-center justify-center lg:justify-start gap-4">
-                    <a href="https://discord.gg/" target="_blank" class="w-full sm:w-auto flex items-center justify-center gap-3 px-8 py-4 bg-gradient-to-r from-royal-900 to-royal-500 hover:from-royal-500 hover:to-royal-900 text-white font-bold rounded-lg border border-gold-500/40 shadow-lg shadow-royal-900/30 transition-all duration-300 hover:-translate-y-0.5">
-                        <i class="fa-brands fa-discord text-xl"></i>
-                        <span>Enter the Realm Today</span>
-                    </a>
-                    <a href="#quiz" class="w-full sm:w-auto flex items-center justify-center gap-2 px-8 py-4 bg-slate-900 hover:bg-slate-850 text-slate-300 hover:text-white font-semibold rounded-lg border border-slate-800 transition-all duration-300">
-                        <span>Take Political Quiz</span>
-                        <i class="fa-solid fa-arrow-right text-xs"></i>
-                    </a>
-                </div>
+        <div class="hero-content">
+            <div class="glass-badge">Season 4 Now Active</div>
+            <h1 class="hero-title">Rule, Debate, <br>and <span class="text-gold">Prosper</span>.</h1>
+            <p class="hero-subtitle">
+                Step into the halls of Westminster. The ultimate British Mock Government on Discord, featuring rich political simulations, dynamic elections, and a player-driven economy.
+            </p>
+            <div class="hero-actions">
+                <a href="#" class="btn btn-primary">Become a Citizen</a>
+                <a href="#about" class="btn btn-secondary">Learn More</a>
             </div>
-
-            <!-- Hero Right: Dynamic Mock Government Crest Display Card -->
-            <div class="lg:col-span-5 relative flex items-center justify-center">
-                <div class="w-full max-w-sm aspect-[4/5] rounded-2xl bg-gradient-to-b from-royal-950/90 to-slate-950 border border-slate-800/80 p-8 flex flex-col justify-between shadow-2xl relative group overflow-hidden">
-                    
-                    <!-- Shiny reflection backdrop effect -->
-                    <div class="absolute -inset-y-12 -inset-x-24 bg-gradient-to-r from-transparent via-white/5 to-transparent rotate-12 -translate-x-full group-hover:translate-x-full transition-transform duration-1000"></div>
-                    
-                    <!-- Stately Card Header -->
-                    <div class="flex items-center justify-between border-b border-slate-800/80 pb-6">
-                        <div class="text-xs text-slate-400 font-semibold tracking-wider">OFFICIAL GOVERNMENT PASSPORT</div>
-                        <i class="fa-solid fa-passport text-gold-400/80 text-xl"></i>
-                    </div>
-
-                    <!-- Stately Crest Graphic -->
-                    <div class="my-6 flex flex-col items-center justify-center text-center space-y-4">
-                        <div class="w-24 h-24 rounded-full bg-slate-900 border-2 border-gold-500 flex items-center justify-center relative shadow-xl">
-                            <i class="fa-solid fa-gavel text-gold-400 text-3xl"></i>
-                            <div class="absolute -top-1 -right-1 w-6 h-6 bg-crimson-600 rounded-full flex items-center justify-center text-[10px] font-bold text-white border border-slate-950">UK</div>
-                        </div>
-                        <div class="space-y-1">
-                            <h2 class="font-serif font-bold text-xl text-slate-100">House of Commons</h2>
-                            <p class="text-xs text-slate-400 tracking-wide uppercase">Member of Parliament (MP)</p>
-                        </div>
-                    </div>
-
-                    <!-- Interactive Citizen Badge -->
-                    <div class="bg-slate-900/80 p-4 rounded-xl border border-slate-800/60 space-y-2">
-                        <div class="flex justify-between text-xs">
-                            <span class="text-slate-400">Holder:</span>
-                            <span class="text-slate-100 font-medium font-mono">Citizen #48102</span>
-                        </div>
-                        <div class="flex justify-between text-xs">
-                            <span class="text-slate-400">Affiliation:</span>
-                            <span class="text-green-400 font-medium">H.M. Loyal Opposition</span>
-                        </div>
-                        <div class="flex justify-between text-xs">
-                            <span class="text-slate-400">Security Clearance:</span>
-                            <span class="text-gold-400 font-medium">Classified - Peer</span>
-                        </div>
-                    </div>
-                </div>
-            </div>
-
         </div>
     </header>
 
-    <!-- ABOUT SECTION -->
-    <section id="about" class="py-24 bg-slate-900/40 relative border-y border-slate-900">
-        <div class="max-w-7xl mx-auto px-6">
-            <div class="text-center max-w-3xl mx-auto space-y-4 mb-16">
-                <span class="text-xs font-bold text-gold-500 tracking-widest uppercase">THE CONSTITUTIONAL FOUNDATION</span>
-                <h2 class="font-serif font-extrabold text-3xl sm:text-4xl lg:text-5xl text-slate-100">Where Digital Democracy Meets Westminster Tradition</h2>
-                <p class="text-slate-400 text-base sm:text-lg leading-relaxed">
-                    A Discord Mock Government is a vibrant online sandbox. We model our constitution on the British Westminster System, offering players a highly strategic political gaming environment.
+    <!-- About Section -->
+    <section id="about" class="section">
+        <div class="container layout-grid">
+            <div class="text-content fade-in">
+                <h2 class="section-title">Enter the Realm</h2>
+                <p>
+                    Our community blends realistic political theory with engaging fictional scenarios. Whether you aspire to be the Prime Minister, a respected Lord, or a shrewd business magnate, there is a path for you.
+                </p>
+                <p>
+                    Experience the thrill of campaigning, forming coalitions, and passing legislation that directly impacts the server.
                 </p>
             </div>
-
-            <!-- Pillars Grid -->
-            <div class="grid grid-cols-1 md:grid-cols-3 gap-8">
-                <!-- Pillar 1 -->
-                <div class="p-8 rounded-2xl bg-slate-950/60 border border-slate-800/80 hover:border-royal-500/50 transition-all duration-300 group flex flex-col justify-between h-full">
-                    <div class="space-y-4">
-                        <div class="w-12 h-12 rounded-xl bg-royal-950 border border-royal-500/20 flex items-center justify-center text-royal-400 text-xl group-hover:scale-110 transition-transform">
-                            <i class="fa-solid fa-person-booth"></i>
-                        </div>
-                        <h3 class="font-serif font-semibold text-xl text-slate-100">Fierce Democratic Elections</h3>
-                        <p class="text-slate-400 text-sm leading-relaxed">
-                            Form registered political parties, run custom advertising campaigns, draft manifesto pledges, and secure the votes of the discord public in server-wide general elections.
-                        </p>
-                    </div>
-                    <div class="pt-6 border-t border-slate-900 mt-6 text-xs text-gold-400 font-semibold uppercase tracking-wider">Every 6 Weeks</div>
-                </div>
-
-                <!-- Pillar 2 -->
-                <div class="p-8 rounded-2xl bg-slate-950/60 border border-slate-800/80 hover:border-royal-500/50 transition-all duration-300 group flex flex-col justify-between h-full">
-                    <div class="space-y-4">
-                        <div class="w-12 h-12 rounded-xl bg-royal-950 border border-royal-500/20 flex items-center justify-center text-royal-400 text-xl group-hover:scale-110 transition-transform">
-                            <i class="fa-solid fa-scroll"></i>
-                        </div>
-                        <h3 class="font-serif font-semibold text-xl text-slate-100">Live Legislative Debate</h3>
-                        <p class="text-slate-400 text-sm leading-relaxed">
-                            As an MP or Peer, write actual legislation, review budget estimates, challenge Cabinet ministers during Prime Minister's Questions (PMQs), and cast votes on controversial bills.
-                        </p>
-                    </div>
-                    <div class="pt-6 border-t border-slate-900 mt-6 text-xs text-gold-400 font-semibold uppercase tracking-wider">Weekly Debates</div>
-                </div>
-
-                <!-- Pillar 3 -->
-                <div class="p-8 rounded-2xl bg-slate-950/60 border border-slate-800/80 hover:border-royal-500/50 transition-all duration-300 group flex flex-col justify-between h-full">
-                    <div class="space-y-4">
-                        <div class="w-12 h-12 rounded-xl bg-royal-950 border border-royal-500/20 flex items-center justify-center text-royal-400 text-xl group-hover:scale-110 transition-transform">
-                            <i class="fa-solid fa-coins"></i>
-                        </div>
-                        <h3 class="font-serif font-semibold text-xl text-slate-100">Complex Stately Economy</h3>
-                        <p class="text-slate-400 text-sm leading-relaxed">
-                            Harness our Discord economy bot (Unbelievaboat) to earn salaries, establish business ventures, pay tax, buy state properties, or secure exclusive titles from the King's Court.
-                        </p>
-                    </div>
-                    <div class="pt-6 border-t border-slate-900 mt-6 text-xs text-gold-400 font-semibold uppercase tracking-wider">Unbelievaboat Powered</div>
+            <div class="visual-content fade-in delay-1">
+                <div class="glass-card">
+                    <div class="card-icon">🏛️</div>
+                    <h3>Parliamentary System</h3>
+                    <p>Fully functional House of Commons and House of Lords with weekly debates.</p>
                 </div>
             </div>
         </div>
     </section>
 
-    <!-- THE BRANCHES SECTION -->
-    <section id="branches" class="py-24 max-w-7xl mx-auto px-6">
-        <div class="grid grid-cols-1 lg:grid-cols-12 gap-12 items-center">
+    <!-- Structure Section -->
+    <section id="structure" class="section bg-alt">
+        <div class="container">
+            <div class="text-center fade-in">
+                <h2 class="section-title">Government Structure</h2>
+                <p class="section-subtitle">Ascend the ranks and secure your legacy in our political landscape.</p>
+            </div>
             
-            <!-- Left Side: Interactive Tabs Header -->
-            <div class="lg:col-span-5 space-y-6">
-                <span class="text-xs font-bold text-gold-500 tracking-widest uppercase">GOVERNMENT STRUCTURE</span>
-                <h2 class="font-serif font-extrabold text-3xl sm:text-4xl lg:text-5xl text-slate-100 leading-tight">The Three Spheres of Sovereign Rule</h2>
-                <p class="text-slate-400 leading-relaxed">
-                    Our mock government operates under a constitutional system. Choose where to place your loyalty: the Crown, the Commons, or the Sovereign Courts.
-                </p>
-
-                <!-- Interactive Tab Nav Buttons -->
-                <div class="space-y-3 pt-4">
-                    <button onclick="switchTab('crown')" class="tab-btn w-full flex items-center justify-between p-4 rounded-xl border border-slate-800 bg-slate-950 hover:bg-slate-900 text-left transition-all duration-300 border-l-4 border-l-gold-500" id="btn-crown">
-                        <div class="flex items-center gap-4">
-                            <div class="text-gold-400 text-lg"><i class="fa-solid fa-crown"></i></div>
-                            <div>
-                                <h4 class="font-semibold text-slate-100 text-sm">The Crown & Court</h4>
-                                <p class="text-xs text-slate-400">The Monarch, Privy Council, and Royal Honors</p>
-                            </div>
-                        </div>
-                        <i class="fa-solid fa-chevron-right text-slate-600 text-xs"></i>
-                    </button>
-
-                    <button onclick="switchTab('commons')" class="tab-btn w-full flex items-center justify-between p-4 rounded-xl border border-slate-800 bg-slate-950 hover:bg-slate-900 text-left transition-all duration-300" id="btn-commons">
-                        <div class="flex items-center gap-4">
-                            <div class="text-slate-300 text-lg"><i class="fa-solid fa-landmark"></i></div>
-                            <div>
-                                <h4 class="font-semibold text-slate-300 text-sm">The House of Commons</h4>
-                                <p class="text-xs text-slate-400">The Prime Minister, Cabinet, Opposition, & MPs</p>
-                            </div>
-                        </div>
-                        <i class="fa-solid fa-chevron-right text-slate-600 text-xs"></i>
-                    </button>
-
-                    <button onclick="switchTab('lords')" class="tab-btn w-full flex items-center justify-between p-4 rounded-xl border border-slate-800 bg-slate-950 hover:bg-slate-900 text-left transition-all duration-300" id="btn-lords">
-                        <div class="flex items-center gap-4">
-                            <div class="text-slate-300 text-lg"><i class="fa-solid fa-building-columns"></i></div>
-                            <div>
-                                <h4 class="font-semibold text-slate-300 text-sm">The House of Lords & Courts</h4>
-                                <p class="text-xs text-slate-400">The Lord Chancellor, Judges, & Nobles</p>
-                            </div>
-                        </div>
-                        <i class="fa-solid fa-chevron-right text-slate-600 text-xs"></i>
-                    </button>
-                </div>
-            </div>
-
-            <!-- Right Side: Beautiful Interactive Detailed Card Display -->
-            <div class="lg:col-span-7">
-                <div class="rounded-2xl bg-gradient-to-br from-slate-900 to-slate-950 border border-slate-800 p-8 sm:p-10 min-h-[420px] flex flex-col justify-between shadow-2xl relative">
-                    
-                    <!-- Dynamic Crown Tab Content -->
-                    <div id="content-crown" class="tab-content space-y-6">
-                        <div class="flex items-center gap-4">
-                            <div class="w-12 h-12 rounded-xl bg-gold-500/10 border border-gold-500/20 flex items-center justify-center text-gold-400 text-2xl">
-                                <i class="fa-solid fa-crown"></i>
-                            </div>
-                            <div>
-                                <span class="text-xs font-semibold text-gold-400 tracking-widest uppercase">THE EXECUTIVE MONARCHY</span>
-                                <h3 class="font-serif font-bold text-2xl text-slate-100">His Majesty’s Crown & Court</h3>
-                            </div>
-                        </div>
-                        
-                        <p class="text-slate-300 text-sm leading-relaxed">
-                            At the apex of our nation sits the Sovereign. The Crown handles the aesthetic and ceremonial majesty of the realm. While remaining politically neutral, the Monarch grants noble titles, signs legislation into Royal Assent, bestows Knighthoods, and commands the Privy Council.
-                        </p>
-
-                        <div class="grid grid-cols-2 gap-4 pt-4 border-t border-slate-800">
-                            <div>
-                                <div class="text-xs text-slate-400">Main Positions</div>
-                                <div class="text-sm font-semibold text-slate-100">Sovereign, Prince of Wales, Lord Chamberlain</div>
-                            </div>
-                            <div>
-                                <div class="text-xs text-slate-400">Core Duties</div>
-                                <div class="text-sm font-semibold text-slate-100">Royal Assent, Honors Lists, Ceremonies</div>
-                            </div>
-                        </div>
+            <div class="cards-grid">
+                <!-- Card 1 -->
+                <div class="structure-card fade-in delay-1">
+                    <div class="card-header blue-accent">
+                        <h4>The Monarchy</h4>
                     </div>
-
-                    <!-- Dynamic Commons Tab Content -->
-                    <div id="content-commons" class="tab-content hidden space-y-6">
-                        <div class="flex items-center gap-4">
-                            <div class="w-12 h-12 rounded-xl bg-green-500/10 border border-green-500/20 flex items-center justify-center text-green-400 text-2xl">
-                                <i class="fa-solid fa-landmark"></i>
-                            </div>
-                            <div>
-                                <span class="text-xs font-semibold text-green-400 tracking-widest uppercase">THE ELECTED HOUSE</span>
-                                <h3 class="font-serif font-bold text-2xl text-slate-100">The House of Commons</h3>
-                            </div>
-                        </div>
-                        
-                        <p class="text-slate-300 text-sm leading-relaxed">
-                            The epicenter of raw power. Run for office, form coalitions, write legislation, or govern as the Prime Minister. Commons hosts intense, moderated legislative debates where members of the government and loyal opposition clash over domestic and foreign policies.
-                        </p>
-
-                        <div class="grid grid-cols-2 gap-4 pt-4 border-t border-slate-800">
-                            <div>
-                                <div class="text-xs text-slate-400">Main Positions</div>
-                                <div class="text-sm font-semibold text-slate-100">Prime Minister, Speaker, Cabinet Minister, MP</div>
-                            </div>
-                            <div>
-                                <div class="text-xs text-slate-400">Core Duties</div>
-                                <div class="text-sm font-semibold text-slate-100">Drafting Bills, Debates, Prime Minister's Questions</div>
-                            </div>
-                        </div>
-                    </div>
-
-                    <!-- Dynamic Lords Tab Content -->
-                    <div id="content-lords" class="tab-content hidden space-y-6">
-                        <div class="flex items-center gap-4">
-                            <div class="w-12 h-12 rounded-xl bg-red-500/10 border border-red-500/20 flex items-center justify-center text-red-400 text-2xl">
-                                <i class="fa-solid fa-building-columns"></i>
-                            </div>
-                            <div>
-                                <span class="text-xs font-semibold text-red-400 tracking-widest uppercase">THE UPPER CHAMBER & JUSTICE</span>
-                                <h3 class="font-serif font-bold text-2xl text-slate-100">The Lords & Sovereign Judicature</h3>
-                            </div>
-                        </div>
-                        
-                        <p class="text-slate-300 text-sm leading-relaxed">
-                            Providing wisdom and legal review. The House of Lords refines and inspects bills sent from the Commons, acting as the ultimate brake on radical legislation. Meanwhile, the Sovereign Court hears constitutional disputes, trials, and rules on Server Rules or election fraud.
-                        </p>
-
-                        <div class="grid grid-cols-2 gap-4 pt-4 border-t border-slate-800">
-                            <div>
-                                <div class="text-xs text-slate-400">Main Positions</div>
-                                <div class="text-sm font-semibold text-slate-100">Lord Chancellor, Justice of the Supreme Court, Peer</div>
-                            </div>
-                            <div>
-                                <div class="text-xs text-slate-400">Core Duties</div>
-                                <div class="text-sm font-semibold text-slate-100">Bill Amendment, Royal Trials, Electoral Disputes</div>
-                            </div>
-                        </div>
-                    </div>
-
-                    <!-- Common Card Action Button -->
-                    <div class="pt-6 border-t border-slate-800/80 flex justify-end">
-                        <a href="https://discord.gg/" target="_blank" class="inline-flex items-center gap-2 px-5 py-2 bg-slate-900 hover:bg-slate-800 text-slate-300 hover:text-white rounded-lg text-xs font-semibold tracking-wide border border-slate-800 transition-all duration-300">
-                            <span>Claim A Seat in the Chamber</span>
-                            <i class="fa-solid fa-chevron-right text-[10px]"></i>
-                        </a>
-                    </div>
-
-                </div>
-            </div>
-
-        </div>
-    </section>
-
-    <!-- INTERACTIVE QUIZ SECTION -->
-    <section id="quiz" class="py-24 bg-slate-900/20 border-t border-slate-900 relative">
-        <div class="absolute inset-0 bg-gradient-to-b from-transparent via-royal-950/5 to-transparent pointer-events-none"></div>
-        <div class="max-w-7xl mx-auto px-6">
-            <div class="grid grid-cols-1 lg:grid-cols-12 gap-12 items-center">
-                
-                <!-- Quiz Left Hand Text Content -->
-                <div class="lg:col-span-5 space-y-6 text-center lg:text-left">
-                    <span class="text-xs font-bold text-gold-500 tracking-widest uppercase">DISCOVER YOUR CALLING</span>
-                    <h2 class="font-serif font-extrabold text-3xl sm:text-4xl lg:text-5xl text-slate-100 leading-tight">Westminster Political Career Finder</h2>
-                    <p class="text-slate-400 leading-relaxed">
-                        Unsure which path matches your ambitions? Answer our expanded strategic questionnaire to secure your recommended track. At the end, our system will generate your custom mock **Digital Ministerial Security Passport** live!
-                    </p>
-                    <div class="flex items-center justify-center lg:justify-start gap-4 text-xs text-slate-400">
-                        <span class="flex items-center gap-1.5"><i class="fa-solid fa-clock text-gold-400"></i> Expanded 5-Step Quiz</span>
-                        <span class="flex items-center gap-1.5"><i class="fa-solid fa-passport text-gold-400"></i> Generates Custom Passport</span>
+                    <div class="card-body">
+                        <p>The ceremonial head of state. Grants royal assent, hands out honors, and oversees the realm's stability.</p>
                     </div>
                 </div>
 
-                <!-- Quiz Right Hand Dynamic Container Card -->
-                <div class="lg:col-span-7">
-                    <div class="p-8 sm:p-10 rounded-2xl bg-gradient-to-br from-slate-900 to-slate-950 border border-slate-800 shadow-2xl relative min-h-[500px] flex flex-col justify-between" id="quiz-container">
-                        
-                        <!-- Question Step 1 -->
-                        <div id="quiz-q1" class="space-y-6">
-                            <div class="flex justify-between items-center border-b border-slate-800 pb-4">
-                                <span class="text-xs font-semibold text-gold-500 font-mono uppercase">Question 1 of 5</span>
-                                <span class="w-24 h-1.5 bg-slate-800 rounded-full overflow-hidden"><span class="block h-full bg-gold-500 w-[20%]"></span></span>
-                            </div>
-                            <h3 class="font-serif font-semibold text-lg sm:text-xl text-slate-100">When joining a political mock government server, what is your primary goal?</h3>
-                            
-                            <div class="space-y-3">
-                                <button onclick="nextQuizStep(2, 'A')" class="w-full text-left p-4 rounded-xl border border-slate-800 bg-slate-950 hover:bg-slate-900 text-slate-300 hover:text-white hover:border-royal-500 transition-all text-sm font-medium">
-                                    A. To hold active power, draft legislation, run for Prime Minister, and win debates on the floor.
-                                </button>
-                                <button onclick="nextQuizStep(2, 'B')" class="w-full text-left p-4 rounded-xl border border-slate-800 bg-slate-950 hover:bg-slate-900 text-slate-300 hover:text-white hover:border-royal-500 transition-all text-sm font-medium">
-                                    B. To serve as a neutral arbiter, oversee disputes fairly, or manage official rules and courts.
-                                </button>
-                                <button onclick="nextQuizStep(2, 'C')" class="w-full text-left p-4 rounded-xl border border-slate-800 bg-slate-950 hover:bg-slate-900 text-slate-300 hover:text-white hover:border-royal-500 transition-all text-sm font-medium">
-                                    C. To host diplomatic ceremonies, organize grand community events, or work close to the Monarch.
-                                </button>
-                                <button onclick="nextQuizStep(2, 'D')" class="w-full text-left p-4 rounded-xl border border-slate-800 bg-slate-950 hover:bg-slate-900 text-slate-300 hover:text-white hover:border-royal-500 transition-all text-sm font-medium">
-                                    D. To run media campaigns, write political mock articles, and expose corruption through press offices.
-                                </button>
-                            </div>
-                        </div>
-
-                        <!-- Question Step 2 -->
-                        <div id="quiz-q2" class="hidden space-y-6">
-                            <div class="flex justify-between items-center border-b border-slate-800 pb-4">
-                                <span class="text-xs font-semibold text-gold-500 font-mono uppercase">Question 2 of 5</span>
-                                <span class="w-24 h-1.5 bg-slate-800 rounded-full overflow-hidden"><span class="block h-full bg-gold-500 w-[40%]"></span></span>
-                            </div>
-                            <h3 class="font-serif font-semibold text-lg sm:text-xl text-slate-100">Where would we most likely find you spending your time inside the server?</h3>
-                            
-                            <div class="space-y-3">
-                                <button onclick="nextQuizStep(3, 'A')" class="w-full text-left p-4 rounded-xl border border-slate-800 bg-slate-950 hover:bg-slate-900 text-slate-300 hover:text-white hover:border-royal-500 transition-all text-sm font-medium">
-                                    A. In the House of Commons debating channel arguing policy points with opposing parties.
-                                </button>
-                                <button onclick="nextQuizStep(3, 'B')" class="w-full text-left p-4 rounded-xl border border-slate-800 bg-slate-950 hover:bg-slate-900 text-slate-300 hover:text-white hover:border-royal-500 transition-all text-sm font-medium">
-                                    B. Reading the constitutional guidelines carefully to prepare for a judicial evaluation or moderation task.
-                                </button>
-                                <button onclick="nextQuizStep(3, 'C')" class="w-full text-left p-4 rounded-xl border border-slate-800 bg-slate-950 hover:bg-slate-900 text-slate-300 hover:text-white hover:border-royal-500 transition-all text-sm font-medium">
-                                    C. Designing elegant layouts, organizing honors registries, and helping manage VIP roles.
-                                </button>
-                                <button onclick="nextQuizStep(3, 'D')" class="w-full text-left p-4 rounded-xl border border-slate-800 bg-slate-950 hover:bg-slate-900 text-slate-300 hover:text-white hover:border-royal-500 transition-all text-sm font-medium">
-                                    D. Monitoring conversations in the general chats to gather news stories and release mock columns.
-                                </button>
-                            </div>
-                        </div>
-
-                        <!-- Question Step 3 -->
-                        <div id="quiz-q3" class="hidden space-y-6">
-                            <div class="flex justify-between items-center border-b border-slate-800 pb-4">
-                                <span class="text-xs font-semibold text-gold-500 font-mono uppercase">Question 3 of 5</span>
-                                <span class="w-24 h-1.5 bg-slate-800 rounded-full overflow-hidden"><span class="block h-full bg-gold-500 w-[60%]"></span></span>
-                            </div>
-                            <h3 class="font-serif font-semibold text-lg sm:text-xl text-slate-100">How do you prefer to handle high-stakes community crises?</h3>
-                            
-                            <div class="space-y-3">
-                                <button onclick="nextQuizStep(4, 'A')" class="w-full text-left p-4 rounded-xl border border-slate-800 bg-slate-950 hover:bg-slate-900 text-slate-300 hover:text-white hover:border-royal-500 transition-all text-sm font-medium">
-                                    A. Issue a fierce, tactical press response and rallies to turn public opinion in your political favor.
-                                </button>
-                                <button onclick="nextQuizStep(4, 'B')" class="w-full text-left p-4 rounded-xl border border-slate-800 bg-slate-950 hover:bg-slate-900 text-slate-300 hover:text-white hover:border-royal-500 transition-all text-sm font-medium">
-                                    B. Review server rules, consult legal precedents, and draft an objective, binding judicial resolution.
-                                </button>
-                                <button onclick="nextQuizStep(4, 'C')" class="w-full text-left p-4 rounded-xl border border-slate-800 bg-slate-950 hover:bg-slate-900 text-slate-300 hover:text-white hover:border-royal-500 transition-all text-sm font-medium">
-                                    C. Coordinate privately with the Crown and administration staff to restore order gracefully.
-                                </button>
-                                <button onclick="nextQuizStep(4, 'D')" class="w-full text-left p-4 rounded-xl border border-slate-800 bg-slate-950 hover:bg-slate-900 text-slate-300 hover:text-white hover:border-royal-500 transition-all text-sm font-medium">
-                                    D. Publish a dramatic, fast investigative report exposing the root causes to the public.
-                                </button>
-                            </div>
-                        </div>
-
-                        <!-- Question Step 4 -->
-                        <div id="quiz-q4" class="hidden space-y-6">
-                            <div class="flex justify-between items-center border-b border-slate-800 pb-4">
-                                <span class="text-xs font-semibold text-gold-500 font-mono uppercase">Question 4 of 5</span>
-                                <span class="w-24 h-1.5 bg-slate-800 rounded-full overflow-hidden"><span class="block h-full bg-gold-500 w-[80%]"></span></span>
-                            </div>
-                            <h3 class="font-serif font-semibold text-lg sm:text-xl text-slate-100">Which state philosophy do you support most?</h3>
-                            
-                            <div class="space-y-3">
-                                <button onclick="nextQuizStep(5, 'A')" class="w-full text-left p-4 rounded-xl border border-slate-800 bg-slate-950 hover:bg-slate-900 text-slate-300 hover:text-white hover:border-royal-500 transition-all text-sm font-medium">
-                                    A. Dynamic democratic representation. The elected government must govern actively.
-                                </button>
-                                <button onclick="nextQuizStep(5, 'B')" class="w-full text-left p-4 rounded-xl border border-slate-800 bg-slate-950 hover:bg-slate-900 text-slate-300 hover:text-white hover:border-royal-500 transition-all text-sm font-medium">
-                                    B. Pure rule of law. A consistent, unbiased constitution protects server order.
-                                </button>
-                                <button onclick="nextQuizStep(5, 'C')" class="w-full text-left p-4 rounded-xl border border-slate-800 bg-slate-950 hover:bg-slate-900 text-slate-300 hover:text-white hover:border-royal-500 transition-all text-sm font-medium">
-                                    C. Traditional majesty and constitutional legacy. Preserving state honor and noble court systems.
-                                </button>
-                                <button onclick="nextQuizStep(5, 'D')" class="w-full text-left p-4 rounded-xl border border-slate-800 bg-slate-950 hover:bg-slate-900 text-slate-300 hover:text-white hover:border-royal-500 transition-all text-sm font-medium">
-                                    D. Absolute transparency and freedom of speech. The public must stay informed.
-                                </button>
-                            </div>
-                        </div>
-
-                        <!-- Question Step 5 -->
-                        <div id="quiz-q5" class="hidden space-y-6">
-                            <div class="flex justify-between items-center border-b border-slate-800 pb-4">
-                                <span class="text-xs font-semibold text-gold-500 font-mono uppercase">Question 5 of 5</span>
-                                <span class="w-24 h-1.5 bg-slate-800 rounded-full overflow-hidden"><span class="block h-full bg-gold-500 w-full"></span></span>
-                            </div>
-                            <h3 class="font-serif font-semibold text-lg sm:text-xl text-slate-100">What is your favorite method of communication or creative writing?</h3>
-                            
-                            <div class="space-y-3">
-                                <button onclick="finishQuiz('A')" class="w-full text-left p-4 rounded-xl border border-slate-800 bg-slate-950 hover:bg-slate-900 text-slate-300 hover:text-white hover:border-royal-500 transition-all text-sm font-medium">
-                                    A. Manifestos, debate briefs, legal bills, and public party policy proposals.
-                                </button>
-                                <button onclick="finishQuiz('B')" class="w-full text-left p-4 rounded-xl border border-slate-800 bg-slate-950 hover:bg-slate-900 text-slate-300 hover:text-white hover:border-royal-500 transition-all text-sm font-medium">
-                                    B. Court declarations, arbitration statements, and structured rule amendments.
-                                </button>
-                                <button onclick="finishQuiz('C')" class="w-full text-left p-4 rounded-xl border border-slate-800 bg-slate-950 hover:bg-slate-900 text-slate-300 hover:text-white hover:border-royal-500 transition-all text-sm font-medium">
-                                    C. Formal royal invitations, honors list announcements, and grand ceremony schedules.
-                                </button>
-                                <button onclick="finishQuiz('D')" class="w-full text-left p-4 rounded-xl border border-slate-800 bg-slate-950 hover:bg-slate-900 text-slate-300 hover:text-white hover:border-royal-500 transition-all text-sm font-medium">
-                                    D. Mock tabloids, political journals, gossip bulletins, and investigative features.
-                                </button>
-                            </div>
-                        </div>
-
-                        <!-- Quiz Results Panel (Incorporating Interactive Custom Passport) -->
-                        <div id="quiz-result" class="hidden space-y-6">
-                            <div class="text-center space-y-4">
-                                <div class="w-12 h-12 rounded-full bg-gold-500/10 border border-gold-500/30 flex items-center justify-center text-gold-400 text-2xl mx-auto shadow-md">
-                                    <i class="fa-solid fa-passport"></i>
-                                </div>
-                                <div class="space-y-1">
-                                    <span class="text-xs font-bold text-gold-500 uppercase tracking-widest font-mono">PASSPORT VERIFICATION SUCCESSFUL</span>
-                                    <h3 class="font-serif font-extrabold text-2xl text-slate-100">Your Recommended Track</h3>
-                                </div>
-                            </div>
-
-                            <!-- Generated Mock Passport Card -->
-                            <div class="w-full max-w-sm mx-auto rounded-2xl bg-gradient-to-b from-royal-950 to-slate-950 border border-gold-500/30 p-6 flex flex-col justify-between shadow-xl space-y-4">
-                                <div class="flex items-center justify-between border-b border-slate-800 pb-3">
-                                    <span class="text-[10px] text-slate-400 font-semibold tracking-wider uppercase">HER MAJESTY'S GOVERNMENT PASSPORT</span>
-                                    <i class="fa-solid fa-crown text-gold-400 text-xs"></i>
-                                </div>
-
-                                <div class="flex items-start gap-4">
-                                    <div class="w-16 h-16 rounded-xl bg-slate-900 border border-slate-800 flex flex-col items-center justify-center text-gold-400 relative">
-                                        <i id="result-passport-icon" class="fa-solid fa-building-columns text-2xl"></i>
-                                        <span class="absolute bottom-0.5 right-0.5 w-3 h-3 bg-green-500 rounded-full border border-slate-950"></span>
-                                    </div>
-                                    <div class="space-y-1">
-                                        <h4 id="result-title" class="font-serif font-bold text-base text-slate-100">Member of Parliament (MP)</h4>
-                                        <p id="result-clearance" class="text-[10px] text-gold-400 uppercase tracking-widest font-mono">Clearance Level: Cabinet Select</p>
-                                        <p id="result-dept" class="text-xs text-slate-400 font-medium">House of Commons</p>
-                                    </div>
-                                </div>
-
-                                <div class="bg-slate-900/60 p-3 rounded-lg border border-slate-800/80 text-[11px] leading-relaxed text-slate-300">
-                                    <span class="font-bold text-slate-200 block mb-1">Career Mission Statement:</span>
-                                    <span id="result-desc">You thrive under fast-paced political pressure, debates, elections, and crafting server laws. Align with political parties immediately to start your Whitehall trajectory.</span>
-                                </div>
-
-                                <div class="flex justify-between items-center text-[10px] text-slate-500 font-mono">
-                                    <span>ISSUED: 2026-UKD</span>
-                                    <span>STATUS: APPROVED</span>
-                                </div>
-                            </div>
-
-                            <div class="flex flex-col sm:flex-row items-center gap-3 justify-center pt-2">
-                                <a href="https://discord.gg/" target="_blank" class="w-full sm:w-auto flex items-center justify-center gap-2 px-6 py-3 bg-gradient-to-r from-royal-900 to-royal-500 hover:from-royal-500 hover:to-royal-900 text-white rounded-lg font-bold text-xs border border-gold-500/30 shadow-lg">
-                                    <i class="fa-brands fa-discord"></i> Claim Passport Role On Discord
-                                </a>
-                                <button onclick="resetQuiz()" class="w-full sm:w-auto px-6 py-3 bg-slate-900 hover:bg-slate-800 text-slate-400 hover:text-white rounded-lg text-xs font-semibold border border-slate-800 transition-colors">
-                                    Retake Quiz
-                                </button>
-                            </div>
-                        </div>
-
+                <!-- Card 2 -->
+                <div class="structure-card fade-in delay-2">
+                    <div class="card-header red-accent">
+                        <h4>Prime Minister & Cabinet</h4>
+                    </div>
+                    <div class="card-body">
+                        <p>The executive branch. Form a government, manage national affairs, and lead your party to victory.</p>
                     </div>
                 </div>
 
+                <!-- Card 3 -->
+                <div class="structure-card fade-in delay-3">
+                    <div class="card-header gold-accent">
+                        <h4>Members of Parliament</h4>
+                    </div>
+                    <div class="card-body">
+                        <p>Elected representatives of the people. Draft bills, debate policies, and hold the government accountable.</p>
+                    </div>
+                </div>
             </div>
         </div>
     </section>
 
-    <!-- LIVE FEED SIMULATOR SECTION -->
-    <section id="live-feed" class="py-24 bg-slate-900/30 border-t border-slate-900 relative">
-        <div class="max-w-7xl mx-auto px-6">
-            
-            <div class="text-center max-w-3xl mx-auto space-y-4 mb-16">
-                <span class="text-xs font-bold text-gold-500 tracking-widest uppercase">REAL SERVER PREVIEW</span>
-                <h2 class="font-serif font-extrabold text-3xl sm:text-4xl lg:text-5xl text-slate-100">Inside the Discord Chambers</h2>
-                <p class="text-slate-400 leading-relaxed">
-                    Witness how our citizens organize events, propose legislation, and hold tense Prime Minister's Questions. Tap on a channel below to simulate our discord interface!
+    <!-- Economy Section -->
+    <section id="economy" class="section">
+        <div class="container layout-grid inverse">
+            <div class="visual-content fade-in delay-1">
+                <div class="glass-card stat-card">
+                    <div class="stat-value">£2.5M</div>
+                    <div class="stat-label">Daily Trading Volume</div>
+                    <div class="bot-integration">Powered by <strong>UnbelievaBoat</strong></div>
+                </div>
+            </div>
+            <div class="text-content fade-in">
+                <h2 class="section-title">Dynamic Economy</h2>
+                <p>
+                    Money is power. Build your wealth using our integrated UnbelievaBoat economy system. Work, trade, and invest your way to the top.
                 </p>
+                <ul class="feature-list">
+                    <li><span class="check">✓</span> Start businesses and employ other citizens.</li>
+                    <li><span class="check">✓</span> Pay taxes (or find loopholes!) shaped by government policy.</li>
+                    <li><span class="check">✓</span> Purchase premium server perks, roles, and exclusive estates.</li>
+                </ul>
             </div>
-
-            <div class="grid grid-cols-1 lg:grid-cols-12 gap-6 items-stretch max-w-5xl mx-auto">
-                
-                <!-- Discord Sidebar Channel selector -->
-                <div class="lg:col-span-4 rounded-xl bg-slate-950 border border-slate-800 p-4 space-y-4 flex flex-col justify-between">
-                    <div>
-                        <!-- Server Name Header -->
-                        <div class="flex items-center justify-between border-b border-slate-800 pb-3">
-                            <div class="flex items-center gap-2">
-                                <i class="fa-solid fa-shield-halved text-gold-500 text-xs"></i>
-                                <span class="font-bold text-slate-100 text-xs tracking-wider uppercase">United Kingdom of Discord</span>
-                            </div>
-                            <i class="fa-solid fa-chevron-down text-slate-500 text-xs"></i>
-                        </div>
-
-                        <!-- Channel categories -->
-                        <div class="space-y-4 pt-4">
-                            <!-- Category 1 -->
-                            <div class="space-y-1">
-                                <div class="text-[10px] text-slate-500 uppercase tracking-widest font-bold font-mono px-2 flex items-center justify-between">
-                                    <span>🏛 Westminster Palace</span>
-                                    <i class="fa-solid fa-plus"></i>
-                                </div>
-                                <button onclick="selectDiscordChannel('commons-chat')" id="chan-commons-chat" class="discord-chan-btn w-full flex items-center gap-2 px-2 py-1.5 rounded bg-slate-900 text-slate-200 text-xs font-medium text-left">
-                                    <span class="text-slate-500 font-mono">#</span> house-of-commons
-                                </button>
-                                <button onclick="selectDiscordChannel('lords-chat')" id="chan-lords-chat" class="discord-chan-btn w-full flex items-center gap-2 px-2 py-1.5 rounded hover:bg-slate-900/40 text-slate-400 hover:text-slate-200 text-xs font-medium text-left">
-                                    <span class="text-slate-500 font-mono">#</span> house-of-lords
-                                </button>
-                            </div>
-
-                            <!-- Category 2 -->
-                            <div class="space-y-1">
-                                <div class="text-[10px] text-slate-500 uppercase tracking-widest font-bold font-mono px-2 flex items-center justify-between">
-                                    <span>📰 Sovereign Press</span>
-                                    <i class="fa-solid fa-plus"></i>
-                                </div>
-                                <button onclick="selectDiscordChannel('announcements')" id="chan-announcements" class="discord-chan-btn w-full flex items-center gap-2 px-2 py-1.5 rounded hover:bg-slate-900/40 text-slate-400 hover:text-slate-200 text-xs font-medium text-left">
-                                    <span class="text-slate-500 font-mono">#</span> election-results
-                                </button>
-                            </div>
-                        </div>
-                    </div>
-
-                    <!-- User Footer Badge -->
-                    <div class="p-2 bg-slate-900 rounded-lg flex items-center justify-between">
-                        <div class="flex items-center gap-2">
-                            <div class="w-8 h-8 rounded-full bg-slate-800 border border-slate-700 flex items-center justify-center text-xs font-bold font-mono text-gold-400">UK</div>
-                            <div>
-                                <div class="text-xs font-bold text-slate-200">You (Citizen)</div>
-                                <span class="text-[10px] text-green-400 flex items-center gap-1"><span class="w-1.5 h-1.5 bg-green-500 rounded-full inline-block"></span> Online</span>
-                            </div>
-                        </div>
-                        <i class="fa-solid fa-gear text-slate-500 text-xs hover:text-slate-300 cursor-pointer"></i>
-                    </div>
-
-                </div>
-
-                <!-- Discord Dynamic Chat Box Window -->
-                <div class="lg:col-span-8 rounded-xl bg-slate-950 border border-slate-800 flex flex-col justify-between overflow-hidden shadow-lg min-h-[400px]">
-                    <!-- Chat Header -->
-                    <div class="p-3 bg-slate-950 border-b border-slate-800 flex items-center justify-between">
-                        <div class="flex items-center gap-2">
-                            <span class="text-slate-500 font-mono">#</span>
-                            <span id="chat-header-name" class="font-bold text-slate-200 text-sm">house-of-commons</span>
-                        </div>
-                        <div class="flex items-center gap-3 text-slate-500 text-sm">
-                            <i class="fa-solid fa-bell"></i>
-                            <i class="fa-solid fa-thumbtack"></i>
-                            <i class="fa-solid fa-users"></i>
-                        </div>
-                    </div>
-
-                    <!-- Chat Body Message Scroller -->
-                    <div id="discord-messages-box" class="p-4 space-y-4 flex-grow overflow-y-auto max-h-[300px]">
-                        <!-- Dynamic Messages are rendered here using JavaScript based on the selected channel -->
-                    </div>
-
-                    <!-- Input Box -->
-                    <div class="p-4 bg-slate-950 border-t border-slate-800/80">
-                        <div class="relative">
-                            <input type="text" readonly placeholder="You cannot send messages in this channel read-only simulation" class="w-full bg-slate-900 border border-slate-800 rounded-lg py-2.5 pl-4 pr-10 text-xs text-slate-500 focus:outline-none focus:border-slate-800">
-                            <div class="absolute right-3 top-1/2 -translate-y-1/2 flex items-center gap-2 text-slate-500 text-sm">
-                                <i class="fa-solid fa-gift hover:text-slate-300 cursor-pointer"></i>
-                                <i class="fa-solid fa-file-image hover:text-slate-300 cursor-pointer"></i>
-                                <i class="fa-solid fa-face-smile hover:text-slate-300 cursor-pointer"></i>
-                            </div>
-                        </div>
-                    </div>
-
-                </div>
-
-            </div>
-
         </div>
     </section>
 
-    <!-- ONBOARDING STEPS SECTION -->
-    <section class="py-24 max-w-7xl mx-auto px-6">
-        <div class="text-center max-w-3xl mx-auto space-y-4 mb-16">
-            <span class="text-xs font-bold text-gold-500 tracking-widest uppercase">ONBOARDING PATHWAY</span>
-            <h2 class="font-serif font-extrabold text-3xl sm:text-4xl lg:text-5xl text-slate-100">Step Into Your Peerage</h2>
-            <p class="text-slate-400 leading-relaxed">
-                Joining a complex political simulation might seem challenging, but our dedicated staff and automation makes joining incredibly streamlined. Here is your fast track to Whitehall.
-            </p>
+    <!-- CTA / Footer -->
+    <footer class="footer">
+        <div class="footer-cta fade-in">
+            <h2>Ready to make your mark?</h2>
+            <p>Join hundreds of other citizens in shaping the future of the nation.</p>
+            <a href="#" class="btn btn-primary btn-large">Join the Discord Server</a>
         </div>
-
-        <!-- 4 Step Cards -->
-        <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
-            
-            <!-- Step 1 -->
-            <div class="p-6 rounded-xl bg-slate-900/40 border border-slate-800/60 space-y-4 relative overflow-hidden group">
-                <div class="absolute top-4 right-4 text-slate-800/80 font-mono font-black text-4xl group-hover:text-gold-500/25 transition-colors">01</div>
-                <div class="w-10 h-10 rounded bg-royal-950 border border-royal-500/30 flex items-center justify-center text-royal-400 text-base">
-                    <i class="fa-brands fa-discord"></i>
-                </div>
-                <h3 class="font-serif font-semibold text-lg text-slate-200">Enter the Server</h3>
-                <p class="text-slate-400 text-xs leading-relaxed">
-                    Click any Join link on this page to securely navigate directly to our Westminster entrance hall role portal on Discord.
-                </p>
-            </div>
-
-            <!-- Step 2 -->
-            <div class="p-6 rounded-xl bg-slate-900/40 border border-slate-800/60 space-y-4 relative overflow-hidden group">
-                <div class="absolute top-4 right-4 text-slate-800/80 font-mono font-black text-4xl group-hover:text-gold-500/25 transition-colors">02</div>
-                <div class="w-10 h-10 rounded bg-royal-950 border border-royal-500/30 flex items-center justify-center text-royal-400 text-base">
-                    <i class="fa-solid fa-clipboard-user"></i>
-                </div>
-                <h3 class="font-serif font-semibold text-lg text-slate-200">Register Citizen</h3>
-                <p class="text-slate-400 text-xs leading-relaxed">
-                    Head to our automated onboarding hub. Use `/verify` or follow the dynamic prompt questions to acquire your passport role.
-                </p>
-            </div>
-
-            <!-- Step 3 -->
-            <div class="p-6 rounded-xl bg-slate-900/40 border border-slate-800/60 space-y-4 relative overflow-hidden group">
-                <div class="absolute top-4 right-4 text-slate-800/80 font-mono font-black text-4xl group-hover:text-gold-500/25 transition-colors">03</div>
-                <div class="w-10 h-10 rounded bg-royal-950 border border-royal-500/30 flex items-center justify-center text-royal-400 text-base">
-                    <i class="fa-solid fa-flag"></i>
-                </div>
-                <h3 class="font-serif font-semibold text-lg text-slate-200">Select Your Party</h3>
-                <p class="text-slate-400 text-xs leading-relaxed">
-                    Browse active manifestos in the Party Hub. Align yourself with Labour, the Conservatives, the Liberal Democrats, or go independent.
-                </p>
-            </div>
-
-            <!-- Step 4 -->
-            <div class="p-6 rounded-xl bg-slate-900/40 border border-slate-800/60 space-y-4 relative overflow-hidden group">
-                <div class="absolute top-4 right-4 text-slate-800/80 font-mono font-black text-4xl group-hover:text-gold-500/25 transition-colors">04</div>
-                <div class="w-10 h-10 rounded bg-royal-950 border border-royal-500/30 flex items-center justify-center text-royal-400 text-base">
-                    <i class="fa-solid fa-gavel"></i>
-                </div>
-                <h3 class="font-serif font-semibold text-lg text-slate-200">Submit Your First Bill</h3>
-                <p class="text-slate-400 text-xs leading-relaxed">
-                    Once in your political party, co-sign an official bill or jump directly into the general debates in the House floor!
-                </p>
-            </div>
-
-        </div>
-    </section>
-
-    <!-- FINAL CTA SECTION -->
-    <section class="py-24 max-w-7xl mx-auto px-6 relative">
-        <div class="rounded-3xl bg-gradient-to-tr from-royal-950/80 via-slate-900 to-crimson-950/40 border border-slate-800/80 p-8 sm:p-12 lg:p-16 text-center space-y-6 relative overflow-hidden royal-glow">
-            
-            <div class="absolute -top-1/2 -right-1/4 w-96 h-96 bg-gold-500/5 rounded-full blur-[100px] pointer-events-none"></div>
-            
-            <div class="relative z-10 space-y-4">
-                <span class="text-xs font-bold text-gold-500 tracking-widest uppercase font-mono">WESTMINSTER AWAIT YOUR ENTRY</span>
-                <h2 class="font-serif font-extrabold text-3xl sm:text-5xl text-slate-100 max-w-2xl mx-auto leading-tight">Will You Serve The Cabinet, Or Stand in Opposition?</h2>
-                <p class="text-slate-400 text-sm sm:text-base max-w-xl mx-auto font-normal">
-                    Claim your seat in parliament, establish financial dynasties, and witness mock democracy at its grandest level.
-                </p>
-                <div class="pt-6 flex flex-col sm:flex-row items-center justify-center gap-4">
-                    <a href="https://discord.gg/" target="_blank" class="w-full sm:w-auto flex items-center justify-center gap-3 px-8 py-4 bg-gradient-to-r from-royal-900 to-royal-500 hover:from-royal-500 hover:to-royal-900 text-white font-bold rounded-lg border border-gold-500/40 shadow-xl transition-all duration-300">
-                        <i class="fa-brands fa-discord text-xl"></i>
-                        <span>Enter the United Kingdom of Discord</span>
-                    </a>
-                </div>
-            </div>
-
-        </div>
-    </section>
-
-    <!-- FOOTER -->
-    <footer class="bg-slate-950 border-t border-slate-900 py-12 text-slate-400 text-sm">
-        <div class="max-w-7xl mx-auto px-6 grid grid-cols-1 md:grid-cols-12 gap-8 items-center">
-            
-            <!-- Left Side Brand -->
-            <div class="md:col-span-5 space-y-4">
-                <div class="flex items-center gap-2">
-                    <div class="w-8 h-8 rounded bg-slate-900 border border-slate-800 flex items-center justify-center text-gold-400">
-                        <i class="fa-solid fa-crown text-sm"></i>
-                    </div>
-                    <span class="font-serif font-extrabold text-slate-100 tracking-wide uppercase">The United Kingdom of Discord</span>
-                </div>
-                <p class="text-xs text-slate-500 max-w-xs leading-relaxed">
-                    An independent roleplaying mock government designed to simulate Westminster democratic processes. Not affiliated directly with His Majesty’s government or any official political group.
-                </p>
-            </div>
-
-            <!-- Right Side Helpful Links -->
-            <div class="md:col-span-7 flex flex-wrap justify-start md:justify-end gap-x-8 gap-y-4">
-                <a href="#about" class="hover:text-gold-400 transition-colors">Our Union</a>
-                <a href="#branches" class="hover:text-gold-400 transition-colors">Parliament Chambers</a>
-                <a href="#quiz" class="hover:text-gold-400 transition-colors">Political Career Quiz</a>
-                <a href="https://discord.gg/" target="_blank" class="text-slate-100 hover:text-gold-400 font-semibold transition-colors">Discord Portal</a>
-            </div>
-
-        </div>
-        
-        <!-- Bottom bar copyright -->
-        <div class="max-w-7xl mx-auto px-6 pt-8 mt-8 border-t border-slate-900/60 flex flex-col sm:flex-row items-center justify-between gap-4 text-xs text-slate-600">
-            <span>&copy; 2026 The United Kingdom of Discord. All Sovereignty Reserved. Built for Westminster simulators.</span>
-            <div class="flex items-center gap-4">
-                <a href="#" class="hover:text-slate-400">Terms of Service</a>
-                <a href="#" class="hover:text-slate-400">Privacy Policy</a>
+        <div class="footer-bottom">
+            <p>&copy; 2026 The British Mock Government. All rights reserved.</p>
+            <div class="footer-links">
+                <a href="#">Constitution</a>
+                <a href="#">Server Rules</a>
             </div>
         </div>
     </footer>
 
-    <!-- JAVASCRIPT LOGIC -->
-    <script>
-        // MOBILE MENU TOGGLE
-        const mobileMenuBtn = document.getElementById('mobile-menu-btn');
-        const mobileMenu = document.getElementById('mobile-menu');
-
-        mobileMenuBtn.addEventListener('click', () => {
-            mobileMenu.classList.toggle('hidden');
-        });
-
-        // REVOLVING CONSTITUTIONAL TABS
-        function switchTab(branch) {
-            // Hide all tab content
-            document.querySelectorAll('.tab-content').forEach(element => {
-                element.classList.add('hidden');
-            });
-
-            // Show selected tab content
-            document.getElementById(`content-${branch}`).classList.remove('hidden');
-
-            // Reset all tab button styles
-            document.querySelectorAll('.tab-btn').forEach(btn => {
-                btn.className = "tab-btn w-full flex items-center justify-between p-4 rounded-xl border border-slate-800 bg-slate-950 hover:bg-slate-900 text-left transition-all duration-300";
-            });
-
-            // Apply selected styling to current button
-            const activeBtn = document.getElementById(`btn-${branch}`);
-            activeBtn.className = "tab-btn w-full flex items-center justify-between p-4 rounded-xl border border-slate-800 bg-slate-950 hover:bg-slate-900 text-left transition-all duration-300 border-l-4 border-l-gold-500";
-        }
-
-        // INTERACTIVE CAREER FINDER POLITICS QUIZ (EXPANDED TO 5 QUESTIONS)
-        let quizAnswers = [];
-        
-        function nextQuizStep(nextStep, chosenOption) {
-            quizAnswers.push(chosenOption);
-            
-            // Hide current active steps
-            document.getElementById('quiz-q1').classList.add('hidden');
-            document.getElementById('quiz-q2').classList.add('hidden');
-            document.getElementById('quiz-q3').classList.add('hidden');
-            document.getElementById('quiz-q4').classList.add('hidden');
-            document.getElementById('quiz-q5').classList.add('hidden');
-
-            // Show next active step
-            document.getElementById(`quiz-q${nextStep}`).classList.remove('hidden');
-        }
-
-        function finishQuiz(chosenOption) {
-            quizAnswers.push(chosenOption);
-
-            // Hide the final question step
-            document.getElementById('quiz-q5').classList.add('hidden');
-            const resultPanel = document.getElementById('quiz-result');
-            resultPanel.classList.remove('hidden');
-
-            // Resolve Quiz Recommendations based on answers array
-            const mostPopularOption = getMostFrequent(quizAnswers);
-            
-            const resultTitle = document.getElementById('result-title');
-            const resultDesc = document.getElementById('result-desc');
-            const resultDept = document.getElementById('result-dept');
-            const resultClearance = document.getElementById('result-clearance');
-            const resultIcon = document.getElementById('result-passport-icon');
-
-            // Reset icon classes before applying new one
-            resultIcon.className = "fa-solid text-2xl";
-
-            if (mostPopularOption === 'A') {
-                resultTitle.innerText = "Member of Parliament (MP)";
-                resultDesc.innerText = "You enjoy high-stakes party battles, debating legislation on the Commons floor, and driving government policies. Join an established party or form your own caucus!";
-                resultDept.innerText = "House of Commons Floor";
-                resultClearance.innerText = "Clearance Level: Cabinet Select";
-                resultIcon.classList.add("fa-building-columns");
-            } else if (mostPopularOption === 'B') {
-                resultTitle.innerText = "Sovereign Justice / Law Lord";
-                resultDesc.innerText = "You value rules, fairness, constitutional integrity, and dispute mediation. Serve inside our sovereign judicial court system reviewing electoral or server complaints.";
-                resultDept.innerText = "The Sovereign Judicature";
-                resultClearance.innerText = "Clearance Level: Legal Adjudicator";
-                resultIcon.classList.add("fa-scale-balanced");
-            } else if (mostPopularOption === 'C') {
-                resultTitle.innerText = "Royal Chamberlain / Privy Peer";
-                resultDesc.innerText = "You are suited for diplomatic operations, ceremony orchestration, coordinating noble registries, and advising the Crown. Work closely with server administrators to keep court activities alive.";
-                resultDept.innerText = "The Royal Court & Privy Council";
-                resultClearance.innerText = "Clearance Level: Imperial Privy Seal";
-                resultIcon.classList.add("fa-crown");
-            } else {
-                resultTitle.innerText = "Press Secretary / Media Baron";
-                resultDesc.innerText = "You love public relations, investigative reporting, publishing editorials, and keeping the public fully informed. Create the primary newsletter or run propaganda for a political party.";
-                resultDept.innerText = "Sovereign Press Office";
-                resultClearance.innerText = "Clearance Level: Fourth Estate Executive";
-                resultIcon.classList.add("fa-newspaper");
-            }
-        }
-
-        function resetQuiz() {
-            quizAnswers = [];
-            document.getElementById('quiz-result').classList.add('hidden');
-            document.getElementById('quiz-q1').classList.remove('hidden');
-        }
-
-        function getMostFrequent(arr) {
-            const hashmap = arr.reduce((acc, val) => {
-                acc[val] = (acc[val] || 0) + 1;
-                return acc;
-            }, {});
-            return Object.keys(hashmap).reduce((a, b) => hashmap[a] > hashmap[b] ? a : b);
-        }
-
-        // SIMULATED INTERACTIVE DISCORD CHANNELS SYSTEM
-        const mockDiscordData = {
-            'commons-chat': [
-                { user: 'ConservativeLeader', role: 'MP', color: 'text-blue-400', msg: 'The Opposition’s tax plan is completely unfeasible! We need real fiscal restraint inside the server.' },
-                { user: 'LabourLeader', role: 'Prime Minister', color: 'text-red-400', msg: 'I remind the Right Honorable gentleman that public spending is critical to fund the Royal Civil Service wages!' },
-                { user: 'SpeakerOfHouse', role: 'Speaker', color: 'text-amber-400', msg: 'ORDER! Members of the House will refer to each other respectfully during this afternoon’s PMQs.' }
-            ],
-            'lords-chat': [
-                { user: 'DukeOfExeter', role: 'Noble Peer', color: 'text-purple-400', msg: 'I propose we review Amendment Bill 481, specifically Clause 2 regarding private business regulations.' },
-                { user: 'LordChancellor', role: 'Law Lord', color: 'text-amber-400', msg: 'Agreed, Duke. We will host a formal review session here in the upper chamber tomorrow at 8:00 PM.' }
-            ],
-            'announcements': [
-                { user: 'ElectoralCommission', role: 'Commission Bot', color: 'text-green-400', msg: '🚨 GENERAL ELECTION RESULTS ARE IN! Conservative Party gains 45% of seats, Labour gains 40%, and Liberal Democrats hold 15%.' },
-                { user: 'HM_Sovereign', role: 'His Majesty', color: 'text-yellow-400', msg: 'I hereby request the Leader of the Conservative Party to meet me at the Palace to form a new Government in my name.' }
-            ]
-        };
-
-        function selectDiscordChannel(chanId) {
-            // Remove active bg styling from buttons
-            document.querySelectorAll('.discord-chan-btn').forEach(btn => {
-                btn.className = "discord-chan-btn w-full flex items-center gap-2 px-2 py-1.5 rounded hover:bg-slate-900/40 text-slate-400 hover:text-slate-200 text-xs font-medium text-left";
-            });
-
-            // Add active styling
-            const activeBtn = document.getElementById(`chan-${chanId}`);
-            activeBtn.className = "discord-chan-btn w-full flex items-center gap-2 px-2 py-1.5 rounded bg-slate-900 text-slate-200 text-xs font-medium text-left";
-
-            // Update chat header name
-            const headerName = document.getElementById('chat-header-name');
-            headerName.innerText = chanId.replace('-', ' ');
-
-            // Render message logs
-            renderDiscordMessages(chanId);
-        }
-
-        function renderDiscordMessages(chanId) {
-            const container = document.getElementById('discord-messages-box');
-            container.innerHTML = ''; // reset previous list
-
-            mockDiscordData[chanId].forEach(item => {
-                const msgWrapper = document.createElement('div');
-                msgWrapper.className = 'flex items-start gap-3 border-b border-slate-900 pb-3 last:border-0';
-
-                // Styled placeholder avatar
-                const initials = item.user.substring(0, 2).toUpperCase();
-                
-                msgWrapper.innerHTML = `
-                    <div class="w-8 h-8 rounded-full bg-slate-900 flex items-center justify-center font-bold text-[10px] text-slate-400 border border-slate-800">${initials}</div>
-                    <div class="space-y-0.5">
-                        <div class="flex items-center gap-2">
-                            <span class="font-bold text-slate-200 text-xs hover:underline cursor-pointer">${item.user}</span>
-                            <span class="px-1.5 py-0.5 rounded text-[9px] font-bold uppercase tracking-wide bg-slate-900 border border-slate-800 ${item.color}">${item.role}</span>
-                        </div>
-                        <p class="text-xs text-slate-300">${item.msg}</p>
-                    </div>
-                `;
-                container.appendChild(msgWrapper);
-            });
-        }
-
-        // STARTUP ROUTINE onLoad
-        window.onload = function() {
-            // Select default Discord preview channel
-            selectDiscordChannel('commons-chat');
-        };
-    </script>
+    <script src="script.js"></script>
 </body>
 </html>
